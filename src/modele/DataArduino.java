@@ -1,98 +1,56 @@
 package modele;
 
-import java.lang.reflect.Array;
-
 public class DataArduino {
-	private static float[] humidite = new float[500];
-	private static int tailleH = 0;
-	
-	private static float[] tempExt = new float[500];
-	private static int tailleExt = 0;
-	
-	private static float[] tempInt = new float[500];
-	private static int tailleInt = 0;
-	
-	@SuppressWarnings("null")
-	public static float[] getHumidite() {
-		float[] tab = null;
-		float[] valeurAretourner = humidite;
-		
-		int tailleInit = Array.getLength(valeurAretourner);
-		if (tailleInit - 8 <= 0)
-		{
-			tailleInit = 0;
-		}
-		
-		int e = 0;
-		for (int i = tailleInit ; i < Array.getLength(valeurAretourner) ; i++)
-		{
-			tab[e] = valeurAretourner[i];	
-			e++;
-		}
-		
-		return tab;
+	private float h;
+	private float ext;
+	private float inte;
+
+	public DataArduino(float h2,float out,float in) {
+		this.h = h2;
+		this.ext = out;
+		this.inte = in;
 	}
 	
-	@SuppressWarnings("null")
-	public static float[] getTempExt() {
-		float[] tab = null;
-		float[] valeurAretourner = tempExt;
-		
-		int tailleInit = Array.getLength(valeurAretourner);
-		if (tailleInit - 8 <= 0)
-		{
-			tailleInit = 0;
-		}
-		
-		int e = 0;
-		for (int i = tailleInit ; i < Array.getLength(valeurAretourner) ; i++)
-		{
-			tab[e] = valeurAretourner[i];	
-			e++;
-		}
-		
-		return tab;
+	/**
+	 * @return the h
+	 */
+	public float getH() {
+		return h;
 	}
-	
-	@SuppressWarnings("null")
-	public static float[] getTempInt() {
-		float[] tab = null;
-		float[] valeurAretourner = tempInt;
-		
-		int tailleInit = Array.getLength(valeurAretourner);
-		if (tailleInit - 8 <= 0)
-		{
-			tailleInit = 0;
-		}
-		
-		int e = 0;
-		for (int i = tailleInit ; i < Array.getLength(valeurAretourner) ; i++)
-		{
-			tab[e] = valeurAretourner[i];	
-			e++;
-		}
-		
-		return tab;
+
+	/**
+	 * @return the ext
+	 */
+	public float getExt() {
+		return ext;
 	}
-	
-	public static void addHumidity(float taux)
-	{
-		humidite[tailleH] = taux;
-		tailleH++;
+
+	/**
+	 * @return the inte
+	 */
+	public float getInte() {
+		return inte;
 	}
-	
-	public static void addTempExt(float temp)
-	{
-		tempExt[tailleExt] = temp;
-		tailleExt++;
+
+	/**
+	 * @param h the h to set
+	 */
+	public void setH(int h) {
+		this.h = h;
 	}
-	
-	public static void addTempInt(float temp)
-	{
-		tempInt[tailleInt] = temp;
-		tailleInt++;
+
+	/**
+	 * @param ext the ext to set
+	 */
+	public void setExt(int ext) {
+		this.ext = ext;
 	}
-	
-	
+
+	/**
+	 * @param inte the inte to set
+	 */
+	public void setInte(int inte) {
+		this.inte = inte;
+	}
 
 }

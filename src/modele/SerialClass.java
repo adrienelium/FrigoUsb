@@ -7,20 +7,20 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
-import vue.Windows;
+import vue.Observateur;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
-
-import controleur.Main;
 import controleur.Regulation;
-public class SerialClass implements SerialPortEventListener {
+public class SerialClass implements SerialPortEventListener,Observable {
 	private int ordre = 1;
 	
 	private float h = 0;
 	private float in = 0;
 	private float out = 0;
 	
-	private Windows fen;
+	private ArrayList<Observateur> mesObservateur;
+	
 	private Regulation regul;
 	
 	public SerialPort serialPort;
@@ -36,8 +36,8 @@ public class SerialClass implements SerialPortEventListener {
 	/** Default bits per second for COM port. */
 	public static final int DATA_RATE = 9600;
 
-	public SerialClass(Windows fen,Regulation regul) {
-		this.fen = fen;
+	public SerialClass(Regulation regul) {
+		mesObservateur = new ArrayList<Observateur>();
 		this.regul = regul;
 	}
 
@@ -140,8 +140,8 @@ public class SerialClass implements SerialPortEventListener {
 	}
 
 	private void sendDataToView() {
-		fen.afficherNouvelleDonnees(h,in,out);
-		regul.afficherNouvelleDonnees(h, in, out);
+		notifyObservateurs();
+		regul.afficherNouvelleDonnees(h, in, out);		
 		
 		regul.decider();
 		
@@ -163,12 +163,30 @@ public class SerialClass implements SerialPortEventListener {
 			System.out.println("could not write to port");
 		}
 	}
+
 	
 	
 	
 	public interface serialReader
 	{
 		public void afficherNouvelleDonnees(float h,float in,float out);
+	}
+
+
+
+
+	@Override
+	public void addObservateur(Observateur obs) {
+		// TODO Auto-generated method stub
+		mesObservateur.add(obs);
+	}
+
+	@Override
+	public void notifyObservateurs() {
+		// TODO Auto-generated method stub
+		for (Observateur obs:mesObservateur) {
+			obs.afficherNotification(new DataArduino(this.h, this.out, this.in));
+		}
 	}
 
 

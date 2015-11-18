@@ -1,9 +1,6 @@
 package controleur;
 
-import java.sql.SQLException;
-
 import javax.swing.JOptionPane;
-
 import modele.SerialClass.serialReader;
 
 public class Regulation implements serialReader{
@@ -13,14 +10,18 @@ public class Regulation implements serialReader{
 	
 	private float h;
 	private float in;
+	@SuppressWarnings("unused")
 	private float out;
 	
 	private float histoIn;
 	
 	public Regulation() {
+		
+		
+		
+		
 		setAllumer(true);
 		tempConsigne = 18;
-		
 		setHistoIn(5000);
 	}
 	
@@ -30,11 +31,6 @@ public class Regulation implements serialReader{
 		this.h= h;
 		this.in = in;
 		this.out = out;
-		
-	
-	
-	
-		
 		
 	}
 	

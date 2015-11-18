@@ -1,6 +1,15 @@
 package vue;
 
 import org.jfree.chart.ChartPanel;
+
+import java.awt.Paint;
+import java.awt.PaintContext;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.ColorModel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.ui.ApplicationFrame;
@@ -60,6 +69,7 @@ public class LineChart extends ApplicationFrame{
 	}
 
 	public JFreeChart getJChart() {
+		
 		
 		return lineChart;
 	}
