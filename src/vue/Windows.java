@@ -21,6 +21,7 @@ import org.jfree.chart.ChartPanel;
 
 import controleur.Regulation;
 import modele.DataArduino;
+import java.awt.CardLayout;
 
 public class Windows implements ActionListener,Observateur{
 
@@ -75,9 +76,10 @@ public class Windows implements ActionListener,Observateur{
 		chart = new LineChart(
 				"Courbe des températures" ,
 				"Température extérieure et intérieure");
+		panel.setLayout(new CardLayout(0, 0));
 
 		ChartPanel component = new ChartPanel(chart.getJChart());
-		panel.add(component);
+		panel.add(component, "name_318427173349897");
 		
 		JSeparator separator = new JSeparator();
 		
@@ -89,7 +91,7 @@ public class Windows implements ActionListener,Observateur{
 		
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -101,7 +103,7 @@ public class Windows implements ActionListener,Observateur{
 					.addContainerGap())
 				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
 				.addComponent(separator_1, GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 318, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
@@ -122,9 +124,9 @@ public class Windows implements ActionListener,Observateur{
 					.addGap(5)
 					.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE))
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(panel_1, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		
@@ -200,7 +202,7 @@ public class Windows implements ActionListener,Observateur{
 		
 		consigneLabel = new JLabel("0\u00B0C");
 		consigneLabel.setForeground(new Color(240, 128, 128));
-		consigneLabel.setFont(new Font("Tahoma", Font.PLAIN, 29));
+		consigneLabel.setFont(new Font("Tahoma", Font.PLAIN, 46));
 		consigneLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JLabel lblConsigne = new JLabel("CONSIGNE");

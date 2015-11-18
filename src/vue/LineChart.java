@@ -1,23 +1,15 @@
 package vue;
 
-import org.jfree.chart.ChartPanel;
-
-import java.awt.Paint;
-import java.awt.PaintContext;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.ColorModel;
+import java.awt.Color;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.ApplicationFrame;
 
 public class LineChart extends ApplicationFrame{
 	private JFreeChart lineChart;
@@ -37,6 +29,8 @@ public class LineChart extends ApplicationFrame{
 	         PlotOrientation.VERTICAL,
 	         true,true,false);
 	         
+	      lineChart.setBackgroundPaint(new Color(77,77,77));
+	      
 	      ChartPanel chartPanel = new ChartPanel( lineChart );
 	      chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
 	      setContentPane( chartPanel );
