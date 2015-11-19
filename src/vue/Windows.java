@@ -59,7 +59,7 @@ public class Windows implements ActionListener,Observateur{
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 862, 770);
+		frame.setBounds(100, 100, 862, 893);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setTitle("USB Frigo Chargeur Plus");
@@ -85,9 +85,7 @@ public class Windows implements ActionListener,Observateur{
 		
 		JSeparator separator_1 = new JSeparator();
 		
-		JPanel panel_1 = new JPanel();
-		
-		JPanel panel_2 = new JPanel();
+		JPanel panel_3 = new JPanel();
 		
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
@@ -105,9 +103,7 @@ public class Windows implements ActionListener,Observateur{
 				.addComponent(separator_1, GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 318, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
-					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 416, GroupLayout.PREFERRED_SIZE)
+					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -123,67 +119,12 @@ public class Windows implements ActionListener,Observateur{
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 454, GroupLayout.PREFERRED_SIZE)
 					.addGap(5)
 					.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(panel_1, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+					.addGap(18, 18, Short.MAX_VALUE)
+					.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE)
+					.addGap(212))
 		);
 		
-		JLabel lblTempratureExtrieure = new JLabel("Temp\u00E9rature ext\u00E9rieure :");
-		lblTempratureExtrieure.setForeground(new Color(255, 255, 255));
-		lblTempratureExtrieure.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		tempExtLabel = new JLabel("0 \u00B0C");
-		tempExtLabel.setForeground(new Color(255, 255, 255));
-		tempExtLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		tempExtLabel.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		JLabel lblTauxDhumiditer = new JLabel("Taux d'humiditer :");
-		lblTauxDhumiditer.setForeground(new Color(255, 255, 255));
-		lblTauxDhumiditer.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		hLabel = new JLabel("0%");
-		hLabel.setForeground(new Color(255, 255, 255));
-		hLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		hLabel.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		JLabel lblRalisationCesiExia = new JLabel("R\u00E9alisation  CESI Exia Toulouse - Meltzer, Guerboukha, Jach, Allen, Kouevi ");
-		lblRalisationCesiExia.setForeground(UIManager.getColor("Button.light"));
-		lblRalisationCesiExia.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-		gl_panel_2.setHorizontalGroup(
-			gl_panel_2.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap(45, Short.MAX_VALUE)
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblRalisationCesiExia)
-						.addGroup(gl_panel_2.createSequentialGroup()
-							.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(lblTauxDhumiditer, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(lblTempratureExtrieure, GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-								.addComponent(hLabel, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addComponent(tempExtLabel, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))))
-					.addContainerGap())
-		);
-		gl_panel_2.setVerticalGroup(
-			gl_panel_2.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-						.addComponent(tempExtLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTempratureExtrieure, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-						.addComponent(hLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTauxDhumiditer, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-					.addComponent(lblRalisationCesiExia)
-					.addContainerGap())
-		);
-		panel_2.setLayout(gl_panel_2);
+		JPanel panel_1 = new JPanel();
 		
 		JButton buttonMoins = new JButton("-");
 		buttonMoins.addActionListener(this);
@@ -251,6 +192,86 @@ public class Windows implements ActionListener,Observateur{
 					.addContainerGap())
 		);
 		panel_1.setLayout(gl_panel_1);
+		
+		JPanel panel_2 = new JPanel();
+		
+		JLabel lblTempratureExtrieure = new JLabel("Temp\u00E9rature ext\u00E9rieure :");
+		lblTempratureExtrieure.setForeground(new Color(255, 255, 255));
+		lblTempratureExtrieure.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
+		
+		tempExtLabel = new JLabel("0 \u00B0C");
+		tempExtLabel.setForeground(new Color(255, 255, 255));
+		tempExtLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		tempExtLabel.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
+		
+		JLabel lblTauxDhumiditer = new JLabel("Taux d'humiditer :");
+		lblTauxDhumiditer.setForeground(new Color(255, 255, 255));
+		lblTauxDhumiditer.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
+		
+		hLabel = new JLabel("0%");
+		hLabel.setForeground(new Color(255, 255, 255));
+		hLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		hLabel.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
+		
+		JLabel lblRalisationCesiExia = new JLabel("R\u00E9alisation  CESI Exia Toulouse - Meltzer, Guerboukha, Jach, Allen, Kouevi ");
+		lblRalisationCesiExia.setForeground(UIManager.getColor("Button.light"));
+		lblRalisationCesiExia.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
+		gl_panel_2.setHorizontalGroup(
+			gl_panel_2.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_2.createSequentialGroup()
+					.addContainerGap(45, Short.MAX_VALUE)
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblRalisationCesiExia)
+						.addGroup(gl_panel_2.createSequentialGroup()
+							.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(lblTauxDhumiditer, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(lblTempratureExtrieure, GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
+								.addComponent(hLabel, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+								.addComponent(tempExtLabel, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))))
+					.addContainerGap())
+		);
+		gl_panel_2.setVerticalGroup(
+			gl_panel_2.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_2.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
+						.addComponent(tempExtLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblTempratureExtrieure, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+						.addComponent(hLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblTauxDhumiditer, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+					.addComponent(lblRalisationCesiExia)
+					.addContainerGap())
+		);
+		panel_2.setLayout(gl_panel_2);
+		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
+		gl_panel_3.setHorizontalGroup(
+			gl_panel_3.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_3.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 318, GroupLayout.PREFERRED_SIZE)
+					.addGap(72)
+					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		gl_panel_3.setVerticalGroup(
+			gl_panel_3.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_3.createSequentialGroup()
+					.addGap(50)
+					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_3.createSequentialGroup()
+							.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+							.addGap(48))
+						.addGroup(gl_panel_3.createSequentialGroup()
+							.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGap(48))))
+		);
+		panel_3.setLayout(gl_panel_3);
 		frame.getContentPane().setLayout(groupLayout);
 	}
 

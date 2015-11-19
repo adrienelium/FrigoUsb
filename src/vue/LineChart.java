@@ -11,8 +11,10 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 
+@SuppressWarnings("serial")
 public class LineChart extends ApplicationFrame{
 	private JFreeChart lineChart;
+	@SuppressWarnings("unused")
 	private DefaultCategoryDataset dataset;
 	private XYSeries tempOut;
 	private XYSeries tempIn;
@@ -30,6 +32,8 @@ public class LineChart extends ApplicationFrame{
 	         true,true,false);
 	         
 	      lineChart.setBackgroundPaint(new Color(77,77,77));
+	      lineChart.getTitle().setPaint(new Color(255, 255, 255));
+	      
 	      
 	      ChartPanel chartPanel = new ChartPanel( lineChart );
 	      chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
