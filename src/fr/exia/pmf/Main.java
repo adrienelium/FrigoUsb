@@ -36,17 +36,17 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
-				// En production on lève une alerte si on est sur des fausses données
-				if (PRODUCTION && !(datalink instanceof ArduinoDataSource)) {
-					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison à l'Arduino."
-							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
-				}
-				
 				// On modifie le LookAndFeel
 				try {
 					UIManager.setLookAndFeel(new org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel());
 				} catch (UnsupportedLookAndFeelException e) {
 					System.err.println("Impossible de charger le LookAndFeel");
+				}
+				
+				// En production on lève une alerte si on est sur des fausses données
+				if (PRODUCTION && !(datalink instanceof ArduinoDataSource)) {
+					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison à l'Arduino."
+							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
 				}
 				
 				// On fabrique une fenêtre

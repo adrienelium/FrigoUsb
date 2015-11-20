@@ -64,12 +64,14 @@ public class LineChart extends ApplicationFrame{
 		  
 		  XYItemRenderer renderer = plot.getRenderer();
 		  
+		  // Température extérieure
 		  renderer.setSeriesItemLabelPaint(0, new Color(241, 61, 7));
 		  renderer.setSeriesPaint(0, new Color(241, 61, 7));
 		  renderer.setSeriesStroke(0,  new BasicStroke(2));
 		  
-		  renderer.setSeriesItemLabelPaint(1, new Color(66, 255, 66));
-		  renderer.setSeriesPaint(1, new Color(66, 255, 66));
+		  // Température intérieure
+		  renderer.setSeriesItemLabelPaint(1, new Color(0, 174, 189));
+		  renderer.setSeriesPaint(1, new Color(0, 174, 189));
 		  renderer.setSeriesStroke(1,  new BasicStroke(2));
 		  
 		  plot.getRangeAxis().setRange(new Range(5, 28));

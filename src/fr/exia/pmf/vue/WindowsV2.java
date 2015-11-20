@@ -166,7 +166,7 @@ public class WindowsV2 extends JFrame {
 		
 		labelTempInt = new JLabel("0 \u00B0C");
 		labelTempInt.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		labelTempInt.setForeground(new Color(66, 255, 66));
+		labelTempInt.setForeground(new Color(0, 174, 189));
 		labelTempInt.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JLabel lblTempratureExterne = new JLabel("Temp\u00E9rature externe");
@@ -180,7 +180,7 @@ public class WindowsV2 extends JFrame {
 		
 		labelHumitidy = new JLabel("0 %");
 		labelHumitidy.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		labelHumitidy.setForeground(new Color(0, 174, 189));
+		labelHumitidy.setForeground(new Color(66, 255, 66));
 		labelHumitidy.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_panelLeft = new GroupLayout(panelLeft);
 		gl_panelLeft.setHorizontalGroup(
@@ -231,16 +231,16 @@ public class WindowsV2 extends JFrame {
 			gl_panelTop.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panelTop.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(labelConsignePower)
+					.addComponent(labelConsignePower, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 		gl_panelTop.setVerticalGroup(
-			gl_panelTop.createParallelGroup(Alignment.LEADING)
+			gl_panelTop.createParallelGroup(Alignment.TRAILING)
 				.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-				.addGroup(Alignment.TRAILING, gl_panelTop.createSequentialGroup()
-					.addContainerGap()
+				.addGroup(gl_panelTop.createSequentialGroup()
+					.addGap(11)
 					.addComponent(labelConsignePower, GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
 					.addGap(11))
 		);
