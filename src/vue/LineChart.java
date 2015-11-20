@@ -51,6 +51,9 @@ public class LineChart extends ApplicationFrame{
 		dataset.addSeries(tempOut);
 		dataset.addSeries(tempIn);
 		
+		this.tempIn.setMaximumItemCount(20);
+		this.tempOut.setMaximumItemCount(20);
+		
 		this.tempIn.add(0,0);
 		this.tempOut.add(0,0);
 		//dataset.addValue( 0, "°C" , String.valueOf(compteur));
@@ -77,5 +80,6 @@ public class LineChart extends ApplicationFrame{
 		compteur++;
 		this.tempIn.add(compteur,tempIn);
 		this.tempOut.add(compteur,tempOut);
+
 	}
 }
