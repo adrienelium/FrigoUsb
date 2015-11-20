@@ -1,94 +1,136 @@
 package controleur;
 
-import javax.swing.JOptionPane;
-import modele.SerialClass.serialReader;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Regulation implements serialReader{
+import abstractions.IRegulator;
+import abstractions.IRegulatorListener;
+import modele.Statement;
+
+public class Regulation implements IRegulator {
 	
-	private float tempConsigne;
-	private boolean allumer;
+	private float consigneTemperature = 18.0f;
+	private boolean consigneAllumage = false;
+	private double histoIn;
 	
-	private float h;
-	private float in;
-	@SuppressWarnings("unused")
-	private float out;
+	private boolean alertCondensation = false;
+	private boolean alertTempGap = false;
+
+	private List<IRegulatorListener> listeners;
+	private boolean debug;
 	
-	private float histoIn;
-	
-	public Regulation() {
+	/**
+	 * Constructeur
+	 */
+	public Regulation(boolean debug) {
+
+		this.debug = debug;
+		// TODO ???
+		this.histoIn = 5000;
 		
-		
-		
-		
-		setAllumer(true);
-		tempConsigne = 18;
-		setHistoIn(5000);
+		this.listeners = new ArrayList<IRegulatorListener>();
 	}
 	
 	@Override
-	public void afficherNouvelleDonnees(float h, float in, float out) {
-		
-		this.h= h;
-		this.in = in;
-		this.out = out;
-		
-	}
-	
-	public void setHistoIn(float histo)
-	{
-		this.histoIn = histo;
-	}
+	public void onNewStatementRead(Statement data) {
 
-	public float getTempConsigne() {
-		return tempConsigne;
+		// On ramène le taux d'humidité entre 0 et 1
+		double h = data.getHumidityRate() / 100;
+		
+		// On calcule la température de rosée
+		double tempRose = Math.pow(h , 1.0/8) * (112 + (0.9 * data.getInteriorTemperature())) + (0.1 * data.getExteriorTemperature()) - 112;
+		
+		// On détecte de la condensation
+		boolean isCondensation = (tempRose >= data.getInteriorTemperature());
+		if (isCondensation != alertCondensation) {
+			// On mémorise le nouvel état
+			alertCondensation = isCondensation;
+			// En cas de changement d'état on envoie un event
+			notifyAlertCondensation(isCondensation);
+		}
+		
+		// On détecte les forts écarts de température
+		double delta = data.getInteriorTemperature() - this.histoIn;
+		boolean isTempGap = delta >= 2 || delta <= -2 && this.histoIn != 5000;
+		if (isTempGap != alertTempGap) {
+			// On mémorise le nouvel état
+			alertTempGap = isTempGap;
+			// En cas de changement on envoie un event
+			notifyAlertTemperatureGap(isTempGap);
+		}
+		
+		// TODO C'est étrange ça... le temps n'est pas pris en compte ?
+		this.histoIn = data.getInteriorTemperature();
+		
+		// On détermine l'état de la consigne d'allumage
+		boolean consigneAllumage = data.getInteriorTemperature() > consigneTemperature;
+		if (this.consigneAllumage != consigneAllumage) {
+			// On mémorise la nouvelle consigne
+			this.consigneAllumage = consigneAllumage;
+			// On propage un événement
+			notifyConsigneAllumageChanged(consigneAllumage);
+		}
+		
 	}
 
 	public void setTempConsigne(float tempConsigne) {
-		this.tempConsigne = tempConsigne;
+		// La température de consigne a changé
+		if (tempConsigne != this.consigneTemperature) {
+			// On enregistre la nouvelle consigne
+			this.consigneTemperature = tempConsigne;
+			// On propage un événement
+			notifyConsigneTemperatureChanged(tempConsigne);
+		}
 	}
 
-	public boolean isAllumer() {
-		return allumer;
+	@Override
+	public void addListener(IRegulatorListener obs) {
+		this.listeners.add(obs);
 	}
 
-	public void setAllumer(boolean allumer) {
-		this.allumer = allumer;
+	@Override
+	public void removeListener(IRegulatorListener obs) {
+		this.listeners.remove(obs);
 	}
 
-	public void decider() {
-		
-		double h = this.h / 100;
-		double tempRose = Math.pow(h , 1.0/8) * (112 + (0.9*this.in)) + (0.1*this.in) - 112;
-		
-		if (tempRose >= this.in)
-		{
-			JOptionPane.showMessageDialog(null, "Attention, Apparition de condensation !");
-		}
-		
-		
-		float nbr = this.in - this.histoIn;
-		if(nbr >= 2 || nbr <= -2 && this.histoIn != 5000)
-		{
-			JOptionPane.showMessageDialog(null, "Attention, écart de température important detecté !");
-		}
-		
-		this.histoIn = this.in;
-		
-		System.out.println("Température de rosé : " + tempRose);
-		
-		if (in > tempConsigne )
-		{
-			setAllumer(true);
-		}
-		else
-		{
-			setAllumer(false);
-		}
-		
+	@Override
+	public void notifyConsigneTemperatureChanged(double tempConsigne) {
+		if (debug) System.out.println("[Regulation] Consigne de température : " + tempConsigne);
+		this.listeners.forEach(obs -> obs.onConsigneTemperatureChanged(tempConsigne));
 	}
-	
-	
-	
-	
+
+	@Override
+	public void notifyConsigneAllumageChanged(boolean powerState) {
+		if (debug) System.out.println("[Regulation] Consigne d'allumage : " + powerState);
+		this.listeners.forEach(obs -> obs.onConsigneAllumageChanged(powerState));
+	}
+
+	@Override
+	public void notifyAlertCondensation(boolean state) {
+		if (debug) System.out.println("[Regulation] Alerte de condensation : " + state);
+		this.listeners.forEach(obs -> obs.onAlertCondensationChanged(state));
+	}
+
+	@Override
+	public void notifyAlertTemperatureGap(boolean state) {
+		if (debug) System.out.println("[Regulation] Alerte d'écart de température : " + state);
+		this.listeners.forEach(obs -> obs.onAlertTemperatureGapChanged(state));
+	}
+
+	public float getConsigneTemperature() {
+		return consigneTemperature;
+	}
+
+	public boolean isConsigneAllumage() {
+		return consigneAllumage;
+	}
+
+	public boolean isAlertCondensation() {
+		return alertCondensation;
+	}
+
+	public boolean isAlertTempGap() {
+		return alertTempGap;
+	}
 	
 }

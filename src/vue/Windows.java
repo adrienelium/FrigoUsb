@@ -1,5 +1,6 @@
 package vue;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -12,38 +13,32 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.ui.RectangleEdge;
 
+import abstractions.IConnectionListener;
+import abstractions.IRegulatorListener;
 import controleur.Regulation;
-import modele.DataArduino;
-import java.awt.CardLayout;
+import modele.Statement;
 
-public class Windows implements ActionListener,Observateur{
+public class Windows extends JFrame implements IConnectionListener, IRegulatorListener {
 
-	private JFrame frame;
-	
-	private LineChart chart;
 	private Regulation regul;
-	
-	private JLabel tempIntLabel;
-	private JLabel consigneLabel;
-	private JLabel hLabel;
-	private JLabel tempExtLabel;
-	/*
-	JPanel panelGraph = new JPanel();
-	
-	chart = new LineChart(
-			"Courbe des températures" ,
-			"Température extérieure et intérieure");
 
-	ChartPanel component = new ChartPanel(chart.getJChart());
-	
-	panelGraph.add(component);*/
+	private JLabel labelConsigneTemp;
+	private JLabel labelConsignePower;
+	private JLabel labelTempInt;
+	private JLabel labelTempExt;
+	private JLabel labelHumitidy;
+	private JLabel alertCondensation;
+	private JLabel alertTempGap;
+
+	private LineChart chart;
 
 	/**
 	 * Create the application.
@@ -51,258 +46,256 @@ public class Windows implements ActionListener,Observateur{
 	public Windows(Regulation regul) {
 		initialize();
 		this.regul = regul;
-		frame.setVisible(true);
+		
+		// Valeur initiales
+		labelConsigneTemp.setText(String.format("%.2f °C", regul.getConsigneTemperature()));
+		alertCondensation.setVisible(false);
+		alertTempGap.setVisible(false);
+		
+		regul.addListener(this);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 862, 893);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setTitle("USB Frigo Chargeur Plus");
-		
-		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon(Windows.class.getResource("/vue/logo.png")));
-		
-		JLabel lblPimpMyFridge = new JLabel("PIMP My Fridge");
-		lblPimpMyFridge.setForeground(Color.WHITE);
-		lblPimpMyFridge.setFont(new Font("Myriad Pro", Font.ITALIC, 30));
-		lblPimpMyFridge.setHorizontalAlignment(SwingConstants.RIGHT);
-		
-		JPanel panel = new JPanel();
-		chart = new LineChart(
-				"Courbe des températures" ,
-				"Température extérieure et intérieure");
-		panel.setLayout(new CardLayout(0, 0));
 
+		setBounds(100, 100, 817, 418);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setTitle("USB Frigo Chargeur Plus");
+		
+		JPanel panelTop = new JPanel();
+		
+		JPanel panelCenter = new JPanel();
+		chart = new LineChart("Courbe des températures", "Température extérieure et intérieure");
 		ChartPanel component = new ChartPanel(chart.getJChart());
-		panel.add(component, "name_318427173349897");
 		
-		JSeparator separator = new JSeparator();
+		panelCenter.add(component, "name_318427173349897");
 		
-		JSeparator separator_1 = new JSeparator();
+		JPanel panelLeft = new JPanel();
+		panelLeft.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Acquisition", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		
-		JPanel panel_3 = new JPanel();
+		JPanel panelRight = new JPanel();
+		panelRight.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "R\u00E9gulation", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
+		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+						.addComponent(panelCenter, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
+						.addComponent(panelTop, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(label, GroupLayout.PREFERRED_SIZE, 124, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 413, Short.MAX_VALUE)
-							.addComponent(lblPimpMyFridge, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
-				.addComponent(separator, GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
-				.addComponent(separator_1, GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+							.addComponent(panelLeft, GroupLayout.PREFERRED_SIZE, 378, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(panelRight, GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
+					.addComponent(panelTop, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panelCenter, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(lblPimpMyFridge, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(label, GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 454, GroupLayout.PREFERRED_SIZE)
-					.addGap(5)
-					.addComponent(separator_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(18, 18, Short.MAX_VALUE)
-					.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE)
-					.addGap(212))
+						.addComponent(panelLeft, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+						.addComponent(panelRight, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap())
 		);
+		panelCenter.setLayout(new CardLayout(0, 0));
 		
-		JPanel panel_1 = new JPanel();
-		
-		JButton buttonMoins = new JButton("-");
-		buttonMoins.addActionListener(this);
-		
-		JButton buttonPlus = new JButton("+");
-		buttonPlus.addActionListener(this);
-		
-		tempIntLabel = new JLabel("0\u00B0C");
-		tempIntLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		tempIntLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		tempIntLabel.setForeground(new Color(255, 255, 255));
-		
-		JLabel lblTemperatureActuelle = new JLabel("Temperature actuelle :");
-		lblTemperatureActuelle.setForeground(new Color(255, 255, 255));
-		lblTemperatureActuelle.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		consigneLabel = new JLabel("0\u00B0C");
-		consigneLabel.setForeground(new Color(240, 128, 128));
-		consigneLabel.setFont(new Font("Tahoma", Font.PLAIN, 46));
-		consigneLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JLabel lblConsigne = new JLabel("CONSIGNE");
+		JLabel lblConsigne = new JLabel("Consigne");
 		lblConsigne.setHorizontalAlignment(SwingConstants.CENTER);
-		lblConsigne.setForeground(new Color(240, 128, 128));
-		lblConsigne.setFont(new Font("Myriad Pro", Font.PLAIN, 18));
-		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-		gl_panel_1.setHorizontalGroup(
-			gl_panel_1.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_1.createSequentialGroup()
+		
+		labelConsigneTemp = new JLabel("0 \u00B0C");
+		labelConsigneTemp.setForeground(Color.ORANGE);
+		labelConsigneTemp.setFont(new Font("Tahoma", Font.PLAIN, 28));
+		labelConsigneTemp.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		labelConsignePower = new JLabel("Allumage OFF");
+		labelConsignePower.setIcon(new ImageIcon(Windows.class.getResource("/vue/off.gif")));
+		
+		JButton btnConsigne = new JButton("Consigne +");
+		btnConsigne.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				regul.setTempConsigne(regul.getConsigneTemperature() + 0.5f);
+			}
+		});
+		
+		JButton btnConsigne_1 = new JButton("Consigne -");
+		btnConsigne_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				regul.setTempConsigne(regul.getConsigneTemperature() - 0.5f);
+			}
+		});
+		
+		alertCondensation = new JLabel("Condensation !");
+		alertCondensation.setForeground(Color.RED);
+		alertCondensation.setIcon(new ImageIcon(Windows.class.getResource("/vue/alert.png")));
+		
+		alertTempGap = new JLabel("Chute de T\u00B0 !");
+		alertTempGap.setForeground(Color.RED);
+		alertTempGap.setIcon(new ImageIcon(Windows.class.getResource("/vue/alert.png")));
+		
+		JLabel lblNewLabel_2 = new JLabel("By Meltzer, Guerboukha, Jach, Allen, Kouevi");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 7));
+		
+		GroupLayout gl_panelRight = new GroupLayout(panelRight);
+		gl_panelRight.setHorizontalGroup(
+			gl_panelRight.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelRight.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addComponent(lblTemperatureActuelle)
-							.addGap(18)
-							.addComponent(tempIntLabel, GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
-						.addComponent(lblConsigne, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-						.addComponent(consigneLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(buttonMoins, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(buttonPlus, GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		gl_panel_1.setVerticalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(1)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addComponent(lblTemperatureActuelle, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED))
-						.addGroup(Alignment.LEADING, gl_panel_1.createSequentialGroup()
-							.addComponent(tempIntLabel, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)))
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addComponent(consigneLabel, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
-							.addGap(1)
-							.addComponent(lblConsigne, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGap(34)
-							.addComponent(buttonPlus, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(buttonMoins, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
-		);
-		panel_1.setLayout(gl_panel_1);
-		
-		JPanel panel_2 = new JPanel();
-		
-		JLabel lblTempratureExtrieure = new JLabel("Temp\u00E9rature ext\u00E9rieure :");
-		lblTempratureExtrieure.setForeground(new Color(255, 255, 255));
-		lblTempratureExtrieure.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		tempExtLabel = new JLabel("0 \u00B0C");
-		tempExtLabel.setForeground(new Color(255, 255, 255));
-		tempExtLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		tempExtLabel.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		JLabel lblTauxDhumiditer = new JLabel("Taux d'humiditer :");
-		lblTauxDhumiditer.setForeground(new Color(255, 255, 255));
-		lblTauxDhumiditer.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		hLabel = new JLabel("0%");
-		hLabel.setForeground(new Color(255, 255, 255));
-		hLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		hLabel.setFont(new Font("Myriad Pro", Font.PLAIN, 17));
-		
-		JLabel lblRalisationCesiExia = new JLabel("R\u00E9alisation  CESI Exia Toulouse - Meltzer, Guerboukha, Jach, Allen, Kouevi ");
-		lblRalisationCesiExia.setForeground(UIManager.getColor("Button.light"));
-		lblRalisationCesiExia.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-		gl_panel_2.setHorizontalGroup(
-			gl_panel_2.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap(45, Short.MAX_VALUE)
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblRalisationCesiExia)
-						.addGroup(gl_panel_2.createSequentialGroup()
-							.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(lblTauxDhumiditer, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(lblTempratureExtrieure, GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-								.addComponent(hLabel, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-								.addComponent(tempExtLabel, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))))
-					.addContainerGap())
-		);
-		gl_panel_2.setVerticalGroup(
-			gl_panel_2.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING)
-						.addComponent(tempExtLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTempratureExtrieure, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+					.addGroup(gl_panelRight.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(lblConsigne, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(labelConsigneTemp, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-						.addComponent(hLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTauxDhumiditer, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-					.addComponent(lblRalisationCesiExia)
+					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panelRight.createSequentialGroup()
+							.addGap(10)
+							.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(btnConsigne_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(btnConsigne, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+						.addComponent(labelConsignePower))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
+						.addComponent(alertCondensation)
+						.addComponent(alertTempGap)
+						.addComponent(lblNewLabel_2))
+					.addContainerGap(60, Short.MAX_VALUE))
+		);
+		gl_panelRight.setVerticalGroup(
+			gl_panelRight.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelRight.createSequentialGroup()
+					.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblConsigne)
+						.addComponent(labelConsignePower)
+						.addComponent(alertCondensation))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
+						.addComponent(labelConsigneTemp, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+						.addGroup(gl_panelRight.createSequentialGroup()
+							.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnConsigne)
+								.addComponent(alertTempGap))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnConsigne_1)
+								.addComponent(lblNewLabel_2))))
 					.addContainerGap())
 		);
-		panel_2.setLayout(gl_panel_2);
-		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
-		gl_panel_3.setHorizontalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_3.createSequentialGroup()
+		panelRight.setLayout(gl_panelRight);
+		
+		JLabel lblTempratureInterne = new JLabel("Temp\u00E9rature interne");
+		
+		labelTempInt = new JLabel("0 \u00B0C");
+		labelTempInt.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		labelTempInt.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblTempratureExterne = new JLabel("Temp\u00E9rature externe");
+		
+		labelTempExt = new JLabel("0\u00B0 C");
+		labelTempExt.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		labelTempExt.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblTauxDhumidit = new JLabel("Taux d'humidit\u00E9");
+		
+		labelHumitidy = new JLabel("0 %");
+		labelHumitidy.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		labelHumitidy.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_panelLeft = new GroupLayout(panelLeft);
+		gl_panelLeft.setHorizontalGroup(
+			gl_panelLeft.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelLeft.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 318, GroupLayout.PREFERRED_SIZE)
-					.addGap(72)
-					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addGroup(gl_panelLeft.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(labelTempInt, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(lblTempratureInterne, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panelLeft.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(labelTempExt, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(lblTempratureExterne, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panelLeft.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(labelHumitidy, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(lblTauxDhumidit, GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE))
+					.addContainerGap(308, Short.MAX_VALUE))
+		);
+		gl_panelLeft.setVerticalGroup(
+			gl_panelLeft.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelLeft.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panelLeft.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTempratureInterne)
+						.addComponent(lblTempratureExterne)
+						.addComponent(lblTauxDhumidit))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panelLeft.createParallelGroup(Alignment.LEADING)
+						.addComponent(labelHumitidy, GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+						.addComponent(labelTempExt, GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+						.addComponent(labelTempInt, GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
 					.addContainerGap())
 		);
-		gl_panel_3.setVerticalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_3.createSequentialGroup()
-					.addGap(50)
-					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_3.createSequentialGroup()
-							.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-							.addGap(48))
-						.addGroup(gl_panel_3.createSequentialGroup()
-							.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addGap(48))))
+		panelLeft.setLayout(gl_panelLeft);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(Windows.class.getResource("/vue/logo.png")));
+		
+		JLabel lblNewLabel_1 = new JLabel("Pimp My Fridge !");
+		lblNewLabel_1.setFont(new Font("Stencil", Font.PLAIN, 26));
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_panelTop = new GroupLayout(panelTop);
+		gl_panelTop.setHorizontalGroup(
+			gl_panelTop.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelTop.createSequentialGroup()
+					.addComponent(lblNewLabel)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE))
 		);
-		panel_3.setLayout(gl_panel_3);
-		frame.getContentPane().setLayout(groupLayout);
-	}
-
-	private void afficherNouvelleDonnees(float h, float in, float out) {
-		tempExtLabel.setText(out + "°C");
-		tempIntLabel.setText(in + "°C");
-		hLabel.setText(h + "%");
-		
-		consigneLabel.setText(regul.getTempConsigne() + "°C");
-		
-		chart.addData(in,out);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		System.err.println("RECU !!!");
-		
-		if (arg0.getActionCommand() == "+") {
-			regul.setTempConsigne(regul.getTempConsigne() + 1);
-		}
-		else
-		{
-			regul.setTempConsigne(regul.getTempConsigne() - 1);
-		}
-		
-		consigneLabel.setText(regul.getTempConsigne() + "°C");
+		gl_panelTop.setVerticalGroup(
+			gl_panelTop.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelTop.createSequentialGroup()
+					.addGroup(gl_panelTop.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(lblNewLabel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(lblNewLabel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		panelTop.setLayout(gl_panelTop);
+		getContentPane().setLayout(groupLayout);
 		
 	}
 
 	@Override
-	public void afficherNotification(DataArduino data) {
-		afficherNouvelleDonnees(data.getH(), data.getInte(), data.getExt());
+	public void onConsigneTemperatureChanged(double temp) {
+		labelConsigneTemp.setText(String.format("%.2f °C", temp));
 	}
+
+	@Override
+	public void onConsigneAllumageChanged(boolean enabled) {
+		labelConsignePower.setText("Allumage " + (enabled ? "ON " : "OFF"));
+		labelConsignePower.setIcon(new ImageIcon(Windows.class.getResource("/vue/" + (enabled ? "yes" : "no") + ".gif")));
+	}
+
+	@Override
+	public void onAlertCondensationChanged(boolean state) {
+		alertCondensation.setVisible(state);
+	}
+
+	@Override
+	public void onAlertTemperatureGapChanged(boolean state) {
+		alertTempGap.setVisible(state);
+	}
+
+	@Override
+	public void onNewStatementRead(Statement data) {
+		labelTempExt.setText(String.format("%.2f °C", data.getExteriorTemperature()));
+		labelTempInt.setText(String.format("%.2f °C", data.getInteriorTemperature()));
+		labelHumitidy.setText(String.format("%.1f", data.getHumidityRate()) + "%");
+		// On ajoute la donnée au chart
+		chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());
+	}
+
 }

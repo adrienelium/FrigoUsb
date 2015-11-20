@@ -3,25 +3,26 @@ package modele;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.TooManyListenersException;
+
+import abstractions.IConnection;
+import abstractions.IConnectionListener;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
-import vue.Observateur;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import controleur.Regulation;
-public class SerialClass implements SerialPortEventListener,Observable {
+public class SerialClass implements SerialPortEventListener, IConnection {
+	
 	private int ordre = 1;
 	
 	private float h = 0;
 	private float in = 0;
 	private float out = 0;
 	
-	private ArrayList<Observateur> mesObservateur;
-	
-	private Regulation regul;
+	private ArrayList<IConnectionListener> listeners;
 	
 	public SerialPort serialPort;
 	/** The port we're normally going to use. */
@@ -29,20 +30,24 @@ public class SerialClass implements SerialPortEventListener,Observable {
 			"COM12", // Windows
 	};
 
-	public static BufferedReader input;
-	public static OutputStream output;
+	public BufferedReader input;
+	public OutputStream output;
+
+	private boolean enabled;
 	/** Milliseconds to block while waiting for port open */
 	public static final int TIME_OUT = 2000;
 	/** Default bits per second for COM port. */
 	public static final int DATA_RATE = 9600;
 
-	public SerialClass(Regulation regul) {
-		mesObservateur = new ArrayList<Observateur>();
-		this.regul = regul;
+	public SerialClass() {
+		listeners = new ArrayList<IConnectionListener>();
 	}
-
-	public void initialize() {
+	
+	@Override
+	public void init() throws Throwable {
+		
 		CommPortIdentifier portId = null;
+		
 		@SuppressWarnings("rawtypes")
 		Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
@@ -57,11 +62,10 @@ public class SerialClass implements SerialPortEventListener,Observable {
 				System.out.println(portId.getName());
 			}
 			
-			
 		}
+		
 		if (portId == null) {
-			System.out.println("Could not find COM port.");
-			return;
+			throw new Exception("Could not find COM port.");
 		}
 
 		try {
@@ -82,15 +86,23 @@ public class SerialClass implements SerialPortEventListener,Observable {
 			output.write(ch);
 
 
-			// add event listeners
-			serialPort.addEventListener(this);
-			serialPort.notifyOnDataAvailable(true);
 		} catch (Exception e) {
 			System.err.println(e.toString());
 		}
 	}
 
-	public synchronized void close() {
+	public void start() {
+		try {
+			serialPort.addEventListener(this);
+			serialPort.notifyOnDataAvailable(true);
+		}
+		catch (TooManyListenersException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	public void close() {
 		if (serialPort != null) {
 			serialPort.removeEventListener();
 			serialPort.close();
@@ -127,7 +139,7 @@ public class SerialClass implements SerialPortEventListener,Observable {
 				if (ordre == 4)
 				{
 					ordre = 1;
-					sendDataToView();
+					sendDataObservers();
 				}
 				
 				System.out.println();
@@ -139,56 +151,66 @@ public class SerialClass implements SerialPortEventListener,Observable {
 
 	}
 
-	private void sendDataToView() {
-		notifyObservateurs();
-		regul.afficherNouvelleDonnees(h, in, out);		
+	private void sendDataObservers() {
 		
-		regul.decider();
+		// On prévient les listeners (la vue et le système de régulation)
+		notifyListeners(new Statement(h, out, in));
 		
-		if(regul.isAllumer())
-		{
-			writeData("1");
-		}
-		else
-		{
-			writeData("0");
-		}
+		// Couplage fort : non, on va passer par l'observer
+//		regul.afficherNouvelleDonnees(h, in, out);		
+//		regul.decider();
+		
+		// Prise de décision : non, c'est à la régulation de faire les actions,
+		// et à cette classe de fournir la méthode writeData() uniquement.
+//		if(regul.isAllumer())
+//		{
+//			writeData("1");
+//		}
+//		else
+//		{
+//			writeData("0");
+//		}
+		
 	}
 
-	public static void writeData(String data) {
-		System.out.println("Sent: " + data);
+	public void writeData(String data) {
 		try {
 			output.write(data.getBytes());
-		} catch (Exception e) {
-			System.out.println("could not write to port");
+		}
+		catch (Exception e) {
+			System.err.println(String.format("Could not write data to serial, %s : %s", e.getClass().getSimpleName(), e.getMessage()));
 		}
 	}
 
-	
-	
-	
-	public interface serialReader
-	{
-		public void afficherNouvelleDonnees(float h,float in,float out);
-	}
-
-
-
-
 	@Override
-	public void addObservateur(Observateur obs) {
-		// TODO Auto-generated method stub
-		mesObservateur.add(obs);
+	public void addListener(IConnectionListener obs) {
+		listeners.add(obs);
 	}
 
 	@Override
-	public void notifyObservateurs() {
-		// TODO Auto-generated method stub
-		for (Observateur obs:mesObservateur) {
-			obs.afficherNotification(new DataArduino(this.h, this.out, this.in));
+	public void notifyListeners(Statement data) {
+		listeners.forEach(observer -> observer.onNewStatementRead(data));
+	}
+
+	@Override
+	public void removeListener(IConnectionListener obs) {
+		listeners.remove(obs);
+	}
+
+	@Override
+	public void setPowerEnabled(boolean value) {
+		// Uniquement en cas de changement
+		if (this.enabled != value) {
+			// On change l'état
+			this.enabled = value;
+			// On écrit la commande sur le bus série
+			writeData(this.enabled ? "1" : "0");
 		}
 	}
 
+	@Override
+	public boolean isPowerEnabled() {
+		return this.enabled;
+	}
 
 }
-

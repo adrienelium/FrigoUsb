@@ -10,6 +10,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RectangleEdge;
 
 @SuppressWarnings("serial")
 public class LineChart extends ApplicationFrame{
@@ -21,7 +22,7 @@ public class LineChart extends ApplicationFrame{
 	
 	private int compteur;
 	
-	public LineChart( String applicationTitle , String chartTitle )
+	public LineChart(String applicationTitle , String chartTitle)
 	   {
 	      super(applicationTitle);
 	      lineChart = ChartFactory.createXYLineChart(
@@ -34,6 +35,9 @@ public class LineChart extends ApplicationFrame{
 	      lineChart.setBackgroundPaint(new Color(77,77,77));
 	      lineChart.getTitle().setPaint(new Color(255, 255, 255));
 	      
+	      setTitle(null);
+	      getJChart().setTitle((String)null);
+		  getJChart().getLegend().setPosition(RectangleEdge.RIGHT);
 	      
 	      ChartPanel chartPanel = new ChartPanel( lineChart );
 	      chartPanel.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
@@ -45,14 +49,14 @@ public class LineChart extends ApplicationFrame{
 	{
 		//dataset = new DefaultCategoryDataset( );
 		XYSeriesCollection dataset = new XYSeriesCollection();
-		tempOut = new XYSeries("Extérieur");
-		tempIn = new XYSeries("Intérieur");
+		tempOut = new XYSeries("T° Out");
+		tempIn = new XYSeries("T° In");
 
 		dataset.addSeries(tempOut);
 		dataset.addSeries(tempIn);
 		
-		this.tempIn.setMaximumItemCount(20);
-		this.tempOut.setMaximumItemCount(20);
+		this.tempIn.setMaximumItemCount(60);
+		this.tempOut.setMaximumItemCount(60);
 		
 		this.tempIn.add(0,0);
 		this.tempOut.add(0,0);

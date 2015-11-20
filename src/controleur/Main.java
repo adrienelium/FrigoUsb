@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import abstractions.IConnection;
+import modele.FakeDataInjector;
 import modele.SerialClass;
 import vue.Windows;
 
@@ -12,71 +14,74 @@ public class Main {
 
 	public static void main(String[] ag) {
 		
+		// Logs
+		boolean debug = false;
+		
 		// Je passe dans le thread de l'UI
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
 				// Je modifie le LookAndFeel
-//				initLookAndFeel();
 				try {
 					UIManager.setLookAndFeel(new org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel());
 				} catch (UnsupportedLookAndFeelException e) {
 					System.err.println("Impossible de charger le LookAndFeel");
 				}
 				
-				// Je fabrique mes fenêtres
-				Regulation regul = new Regulation();
+				// Je fabrique ma logique de régulation
+				Regulation regul = new Regulation(debug);
+				
+				// Je fabrique ma vue
 				Windows fen = new Windows(regul);
+				fen.setVisible(true);
 				
 				// Je lance mes traitements hors IHM dans un nouveau thread
 				new Thread(new Runnable() {
 					public void run() {
-						SerialClass obj = new SerialClass(regul);
-						obj.addObservateur(fen);
-						obj.initialize();
+						
+						// On choisit une implémentation valide
+						IConnection obj = chooseImplementation(new SerialClass(), new FakeDataInjector());
+						
+						// Aucune implémentation valide
+						if (obj == null) {
+							System.err.println("No valid implementation to run");
+							return;
+						}
+						
+						// On affiche l'implémentation retenue
+						System.out.println("Data source: " + obj.getClass().getSimpleName());
+						
+						// On inscrit les listeners						
+						obj.addListener(fen);
+						obj.addListener(regul);
+						
+						// Et on lance la connexion
+						obj.start();
+						
 					}
 				}).start();
 				
 			}
 		});
-		
-
-
-
 
 	}
-
-	public static void initLookAndFeel() {
-
-		// On détecte la version V6 de la librairie substance
-		String className = "org.pushingpixels.substance.api.skin.SubstanceRavenLookAndFeel";
-		try {
-			Class.forName(className);
-		} catch (ClassNotFoundException ex1) {
-			// On détecte la version V5 de la librairie substance
-			className = "org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel";
+	
+	public static IConnection chooseImplementation(IConnection... impls) {
+		// On parcours les implémentations
+		for (IConnection impl : impls) {
+			// On tente d'initialiser 
 			try {
-				Class.forName(className);
-			} catch (ClassNotFoundException ex2) {
-				return;
+				impl.init();
 			}
+			// En cas d'erreur, on tente une autre implémentation
+			catch (Throwable e) {
+				continue;
+			}
+			// On a trouvé une implémentation valide
+			return impl;
 		}
-
-		// On fait une copie de la classe du LAF
-		final String lafClass = className;
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				// On tente le chargement de laf
-				try {
-					UIManager.setLookAndFeel(lafClass);
-
-				} catch (Throwable ex) {
-					System.err.println("Impossible de charger le LookAndFeel");
-				}
-			}
-		});
-
+		// On n'a pas trouvé d'implémentation valide
+		return null;
 	}
 
 }
