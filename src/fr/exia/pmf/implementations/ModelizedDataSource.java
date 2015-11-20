@@ -54,9 +54,12 @@ public class ModelizedDataSource extends RandomDataSource {
 			}
 			
 			// Quand le frido est coupé la génération de froid baisse rapidement
-			if (!isPowerEnabled()) {
+			else if (!isPowerEnabled()) {
 				variationFroid -= pasVariationChaud;
 			}
+			
+			// On évite la chauffe du réfrigérateur
+			if (variationFroid < 0) variationFroid = 0;
 			
 			// On fait varier la T° intérieure avec la génération de froid
 			Tin -= variationFroid;
@@ -71,6 +74,9 @@ public class ModelizedDataSource extends RandomDataSource {
 				if (cibleTempExt > 27) cibleTempExt -= 3;
 				if (cibleTempExt < 6) cibleTempExt += 3;
 			}
+			
+			// On évite cette incohérence
+			if (Tin > Tout) Tin = Tout;
 			
 			// On notifie les listeners qu'une nouvelle données est disponible
 			notifyListeners(new Statement(H, Tout, Tin));
