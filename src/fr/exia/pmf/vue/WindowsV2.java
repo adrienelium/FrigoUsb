@@ -215,28 +215,21 @@ public class WindowsV2 extends JFrame {
 		);
 		panelLeft.setLayout(gl_panelLeft);
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/logo.png")));
-		
-		JLabel lblNewLabel_1 = new JLabel("Pimp My Fridge !");
-		lblNewLabel_1.setFont(new Font("Stencil", Font.PLAIN, 26));
+		JLabel lblNewLabel_1 = new JLabel("          Pimp My Fridge !");
+		lblNewLabel_1.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/logo.png")));
+		lblNewLabel_1.setFont(new Font("Arial Narrow", Font.PLAIN, 26));
 		lblNewLabel_1.setForeground(Color.WHITE);
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_panelTop = new GroupLayout(panelTop);
 		gl_panelTop.setHorizontalGroup(
 			gl_panelTop.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelTop.createSequentialGroup()
-					.addComponent(lblNewLabel)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE))
+				.addGroup(Alignment.TRAILING, gl_panelTop.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE))
 		);
 		gl_panelTop.setVerticalGroup(
 			gl_panelTop.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelTop.createSequentialGroup()
-					.addGroup(gl_panelTop.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(lblNewLabel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(lblNewLabel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
 		);
 		panelTop.setLayout(gl_panelTop);
 		getContentPane().setLayout(groupLayout);
