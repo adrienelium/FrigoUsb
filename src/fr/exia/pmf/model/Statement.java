@@ -1,4 +1,4 @@
-package modele;
+package fr.exia.pmf.model;
 
 public class Statement {
 	
@@ -36,6 +36,11 @@ public class Statement {
 	 */
 	public double getInteriorTemperature() {
 		return tempIn;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Tin=%s°C Tout=%s°C H=%s%%", tempIn, tempOut, humidity);
 	}
 
 }

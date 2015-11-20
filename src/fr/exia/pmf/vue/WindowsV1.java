@@ -1,4 +1,4 @@
-package vue;
+package fr.exia.pmf.vue;
 
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -21,17 +21,17 @@ import javax.swing.UIManager;
 
 import org.jfree.chart.ChartPanel;
 
-import abstractions.IConnectionListener;
-import abstractions.IRegulatorListener;
-import controleur.Regulation;
-import modele.Statement;
+import fr.exia.pmf.abstractions.IConnectionListener;
+import fr.exia.pmf.abstractions.IRegulatorListener;
+import fr.exia.pmf.implementations.RegulationSimple;
+import fr.exia.pmf.model.Statement;
 
-public class WindowsOld implements ActionListener, IConnectionListener, IRegulatorListener {
+public class WindowsV1 implements ActionListener, IConnectionListener, IRegulatorListener {
 
 	private JFrame frame;
 	
 	private LineChart chart;
-	private Regulation regul;
+	private RegulationSimple regul;
 	
 	private JLabel tempIntLabel;
 	private JLabel consigneLabel;
@@ -41,7 +41,7 @@ public class WindowsOld implements ActionListener, IConnectionListener, IRegulat
 	/**
 	 * Create the application.
 	 */
-	public WindowsOld(Regulation regul) {
+	public WindowsV1(RegulationSimple regul) {
 		initialize();
 		this.regul = regul;
 		frame.setVisible(true);
@@ -58,7 +58,7 @@ public class WindowsOld implements ActionListener, IConnectionListener, IRegulat
 		frame.setTitle("USB Frigo Chargeur Plus");
 		
 		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon(WindowsOld.class.getResource("/vue/logo.png")));
+		label.setIcon(new ImageIcon(WindowsV1.class.getResource("/vue/logo.png")));
 		
 		JLabel lblPimpMyFridge = new JLabel("PIMP My Fridge");
 		lblPimpMyFridge.setForeground(Color.WHITE);

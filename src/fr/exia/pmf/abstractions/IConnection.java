@@ -1,6 +1,6 @@
-package abstractions;
+package fr.exia.pmf.abstractions;
 
-import modele.Statement;
+import fr.exia.pmf.model.Statement;
 
 public interface IConnection {
 	

@@ -1,16 +1,17 @@
-package modele;
+package fr.exia.pmf.implementations;
 
 import java.util.ArrayList;
 
-import abstractions.IConnection;
-import abstractions.IConnectionListener;
+import fr.exia.pmf.abstractions.IConnection;
+import fr.exia.pmf.abstractions.IConnectionListener;
+import fr.exia.pmf.model.Statement;
 
-public class FakeDataInjector extends Thread implements IConnection {
+public class RandomDataSource extends Thread implements IConnection {
 
 	private ArrayList<IConnectionListener> listeners;
 	private boolean enabled;
 	
-	public FakeDataInjector() {
+	public RandomDataSource() {
 		listeners = new ArrayList<IConnectionListener>();
 	}
 
@@ -30,14 +31,18 @@ public class FakeDataInjector extends Thread implements IConnection {
 					Math.random() * 30
 			));
 			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				return;
-			}
+			sleep();
 			
 		}
 		
+	}
+
+	protected void sleep() {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			System.exit(-2);
+		}
 	}
 	
 	@Override

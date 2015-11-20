@@ -1,10 +1,8 @@
-package vue;
+package fr.exia.pmf.vue;
 
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -19,48 +17,32 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import org.jfree.chart.ChartPanel;
-import org.jfree.ui.RectangleEdge;
 
-import abstractions.IConnectionListener;
-import abstractions.IRegulatorListener;
-import controleur.Regulation;
-import modele.Statement;
+public class WindowsV2 extends JFrame {
 
-public class Windows extends JFrame implements IConnectionListener, IRegulatorListener {
+	private static final long serialVersionUID = 1673388500927286919L;
+	
+	public static ImageIcon ICON_OFF = new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/off.gif"));
+	public static ImageIcon ICON_YES = new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/yes.gif"));
+	public static ImageIcon ICON_NO = new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/no.gif"));
 
-	private Regulation regul;
-
-	private JLabel labelConsigneTemp;
-	private JLabel labelConsignePower;
-	private JLabel labelTempInt;
-	private JLabel labelTempExt;
-	private JLabel labelHumitidy;
-	private JLabel alertCondensation;
-	private JLabel alertTempGap;
-
-	private LineChart chart;
+	public JLabel labelConsigneTemp;
+	public JLabel labelConsignePower;
+	public JLabel labelTempInt;
+	public JLabel labelTempExt;
+	public JLabel labelHumitidy;
+	public JLabel alertCondensation;
+	public JLabel alertTempGap;
+	public LineChart chart;
+	public JButton btnConsignePlus;
+	public JButton btnConsigneMoins;
 
 	/**
 	 * Create the application.
 	 */
-	public Windows(Regulation regul) {
-		initialize();
-		this.regul = regul;
+	public WindowsV2() {
 		
-		// Valeur initiales
-		labelConsigneTemp.setText(String.format("%.2f °C", regul.getConsigneTemperature()));
-		alertCondensation.setVisible(false);
-		alertTempGap.setVisible(false);
-		
-		regul.addListener(this);
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-
-		setBounds(100, 100, 817, 418);
+		setBounds(100, 100, 843, 418);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setTitle("USB Frigo Chargeur Plus");
@@ -74,10 +56,10 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 		panelCenter.add(component, "name_318427173349897");
 		
 		JPanel panelLeft = new JPanel();
-		panelLeft.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Acquisition", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panelLeft.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), null, TitledBorder.LEADING, TitledBorder.TOP));
 		
 		JPanel panelRight = new JPanel();
-		panelRight.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "R\u00E9gulation", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panelRight.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), null, TitledBorder.LEADING, TitledBorder.TOP));
 		
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
@@ -85,12 +67,12 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(panelCenter, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
-						.addComponent(panelTop, GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
+						.addComponent(panelCenter, GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
+						.addComponent(panelTop, GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(panelLeft, GroupLayout.PREFERRED_SIZE, 378, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(panelRight, GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)))
+							.addComponent(panelRight, GroupLayout.PREFERRED_SIZE, 423, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -101,9 +83,9 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panelCenter, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addComponent(panelLeft, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-						.addComponent(panelRight, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(panelRight, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		panelCenter.setLayout(new CardLayout(0, 0));
@@ -117,32 +99,21 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 		labelConsigneTemp.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		labelConsignePower = new JLabel("Allumage OFF");
-		labelConsignePower.setIcon(new ImageIcon(Windows.class.getResource("/vue/off.gif")));
+		labelConsignePower.setIcon(ICON_OFF);
 		
-		JButton btnConsigne = new JButton("Consigne +");
-		btnConsigne.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				regul.setTempConsigne(regul.getConsigneTemperature() + 0.5f);
-			}
-		});
-		
-		JButton btnConsigne_1 = new JButton("Consigne -");
-		btnConsigne_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				regul.setTempConsigne(regul.getConsigneTemperature() - 0.5f);
-			}
-		});
+		btnConsignePlus = new JButton("Consigne +");
+		btnConsigneMoins = new JButton("Consigne -");
 		
 		alertCondensation = new JLabel("Condensation !");
 		alertCondensation.setForeground(Color.RED);
-		alertCondensation.setIcon(new ImageIcon(Windows.class.getResource("/vue/alert.png")));
+		alertCondensation.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/alert.png")));
 		
 		alertTempGap = new JLabel("Chute de T\u00B0 !");
 		alertTempGap.setForeground(Color.RED);
-		alertTempGap.setIcon(new ImageIcon(Windows.class.getResource("/vue/alert.png")));
+		alertTempGap.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/alert.png")));
 		
-		JLabel lblNewLabel_2 = new JLabel("By Meltzer, Guerboukha, Jach, Allen, Kouevi");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 7));
+		JLabel lblNewLabel_2 = new JLabel("R\u00E9alis\u00E9 par Meltzer, Guerboukha, Jach, Allen, Kouevi");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		
 		GroupLayout gl_panelRight = new GroupLayout(panelRight);
 		gl_panelRight.setHorizontalGroup(
@@ -152,39 +123,39 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 					.addGroup(gl_panelRight.createParallelGroup(Alignment.TRAILING, false)
 						.addComponent(lblConsigne, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(labelConsigneTemp, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGap(28)
 					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel_2)
 						.addGroup(gl_panelRight.createSequentialGroup()
-							.addGap(10)
-							.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(btnConsigne_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(btnConsigne, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+							.addComponent(btnConsigneMoins)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnConsignePlus))
+						.addGroup(gl_panelRight.createSequentialGroup()
+							.addComponent(alertTempGap)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(alertCondensation))
 						.addComponent(labelConsignePower))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
-						.addComponent(alertCondensation)
-						.addComponent(alertTempGap)
-						.addComponent(lblNewLabel_2))
-					.addContainerGap(60, Short.MAX_VALUE))
+					.addGap(113))
 		);
 		gl_panelRight.setVerticalGroup(
 			gl_panelRight.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelRight.createSequentialGroup()
 					.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblConsigne)
-						.addComponent(labelConsignePower)
-						.addComponent(alertCondensation))
+						.addComponent(labelConsignePower))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
-						.addComponent(labelConsigneTemp, GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+						.addComponent(labelConsigneTemp, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
 						.addGroup(gl_panelRight.createSequentialGroup()
 							.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
-								.addComponent(btnConsigne)
-								.addComponent(alertTempGap))
+								.addComponent(alertTempGap)
+								.addComponent(alertCondensation))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
-								.addComponent(btnConsigne_1)
-								.addComponent(lblNewLabel_2))))
+								.addComponent(btnConsigneMoins, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnConsignePlus, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+							.addComponent(lblNewLabel_2)))
 					.addContainerGap())
 		);
 		panelRight.setLayout(gl_panelRight);
@@ -193,18 +164,21 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 		
 		labelTempInt = new JLabel("0 \u00B0C");
 		labelTempInt.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		labelTempInt.setForeground(new Color(66, 255, 66));
 		labelTempInt.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JLabel lblTempratureExterne = new JLabel("Temp\u00E9rature externe");
 		
 		labelTempExt = new JLabel("0\u00B0 C");
 		labelTempExt.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		labelTempExt.setForeground(new Color(241, 61, 7));
 		labelTempExt.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JLabel lblTauxDhumidit = new JLabel("Taux d'humidit\u00E9");
 		
 		labelHumitidy = new JLabel("0 %");
 		labelHumitidy.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		labelHumitidy.setForeground(new Color(0, 174, 189));
 		labelHumitidy.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_panelLeft = new GroupLayout(panelLeft);
 		gl_panelLeft.setHorizontalGroup(
@@ -242,10 +216,11 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 		panelLeft.setLayout(gl_panelLeft);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(Windows.class.getResource("/vue/logo.png")));
+		lblNewLabel.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/logo.png")));
 		
 		JLabel lblNewLabel_1 = new JLabel("Pimp My Fridge !");
 		lblNewLabel_1.setFont(new Font("Stencil", Font.PLAIN, 26));
+		lblNewLabel_1.setForeground(Color.WHITE);
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_panelTop = new GroupLayout(panelTop);
 		gl_panelTop.setHorizontalGroup(
@@ -267,35 +242,4 @@ public class Windows extends JFrame implements IConnectionListener, IRegulatorLi
 		getContentPane().setLayout(groupLayout);
 		
 	}
-
-	@Override
-	public void onConsigneTemperatureChanged(double temp) {
-		labelConsigneTemp.setText(String.format("%.2f °C", temp));
-	}
-
-	@Override
-	public void onConsigneAllumageChanged(boolean enabled) {
-		labelConsignePower.setText("Allumage " + (enabled ? "ON " : "OFF"));
-		labelConsignePower.setIcon(new ImageIcon(Windows.class.getResource("/vue/" + (enabled ? "yes" : "no") + ".gif")));
-	}
-
-	@Override
-	public void onAlertCondensationChanged(boolean state) {
-		alertCondensation.setVisible(state);
-	}
-
-	@Override
-	public void onAlertTemperatureGapChanged(boolean state) {
-		alertTempGap.setVisible(state);
-	}
-
-	@Override
-	public void onNewStatementRead(Statement data) {
-		labelTempExt.setText(String.format("%.2f °C", data.getExteriorTemperature()));
-		labelTempInt.setText(String.format("%.2f °C", data.getInteriorTemperature()));
-		labelHumitidy.setText(String.format("%.1f", data.getHumidityRate()) + "%");
-		// On ajoute la donnée au chart
-		chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());
-	}
-
 }

@@ -1,15 +1,16 @@
-package controleur;
+package fr.exia.pmf.implementations;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import abstractions.IRegulator;
-import abstractions.IRegulatorListener;
-import modele.Statement;
+import fr.exia.pmf.abstractions.IRegulator;
+import fr.exia.pmf.abstractions.IRegulatorListener;
+import fr.exia.pmf.model.Statement;
 
-public class Regulation implements IRegulator {
+public class RegulationSimple implements IRegulator {
 	
-	private float consigneTemperature = 18.0f;
+	private float consigneTemperature = 16.0f;
 	private boolean consigneAllumage = false;
 	private double histoIn;
 	
@@ -18,11 +19,12 @@ public class Regulation implements IRegulator {
 
 	private List<IRegulatorListener> listeners;
 	private boolean debug;
+	private Date lastAllumageOn = null;
 	
 	/**
 	 * Constructeur
 	 */
-	public Regulation(boolean debug) {
+	public RegulationSimple(boolean debug) {
 
 		this.debug = debug;
 		// TODO ???
@@ -51,7 +53,7 @@ public class Regulation implements IRegulator {
 		
 		// On détecte les forts écarts de température
 		double delta = data.getInteriorTemperature() - this.histoIn;
-		boolean isTempGap = delta >= 2 || delta <= -2 && this.histoIn != 5000;
+		boolean isTempGap = delta >= 2 && this.histoIn != 5000;
 		if (isTempGap != alertTempGap) {
 			// On mémorise le nouvel état
 			alertTempGap = isTempGap;
@@ -64,7 +66,17 @@ public class Regulation implements IRegulator {
 		
 		// On détermine l'état de la consigne d'allumage
 		boolean consigneAllumage = data.getInteriorTemperature() > consigneTemperature;
+		// On vérifie que la consigne a changée
 		if (this.consigneAllumage != consigneAllumage) {
+			// On veut allumer le frigo
+			if (consigneAllumage) {
+				// Si on a allumé le frigo il y a moins de 2 secondes on ne le rallume pas
+				// On simule un système d'économie d'énergie !
+				if (lastAllumageOn != null && new Date().getTime() - lastAllumageOn.getTime() < 200) {
+					return;
+				}
+				lastAllumageOn = new Date(); 
+			}
 			// On mémorise la nouvelle consigne
 			this.consigneAllumage = consigneAllumage;
 			// On propage un événement
@@ -73,6 +85,7 @@ public class Regulation implements IRegulator {
 		
 	}
 
+	@Override
 	public void setTempConsigne(float tempConsigne) {
 		// La température de consigne a changé
 		if (tempConsigne != this.consigneTemperature) {
@@ -117,18 +130,22 @@ public class Regulation implements IRegulator {
 		this.listeners.forEach(obs -> obs.onAlertTemperatureGapChanged(state));
 	}
 
+	@Override
 	public float getConsigneTemperature() {
 		return consigneTemperature;
 	}
 
+	@Override
 	public boolean isConsigneAllumage() {
 		return consigneAllumage;
 	}
 
-	public boolean isAlertCondensation() {
+	@Override
+	public boolean isAlertLiquefaction() {
 		return alertCondensation;
 	}
 
+	@Override
 	public boolean isAlertTempGap() {
 		return alertTempGap;
 	}

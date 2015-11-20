@@ -1,4 +1,4 @@
-package abstractions;
+package fr.exia.pmf.abstractions;
 
 public interface IRegulator extends IConnectionListener {
 
@@ -31,5 +31,30 @@ public interface IRegulator extends IConnectionListener {
 	 * Notifier les observateurs quand l'alerte d'écart de température change d'état.
 	 */
 	public void notifyAlertTemperatureGap(boolean state);
+	
+	/**
+	 * Modifier la température de consigne, en °C.
+	 */
+	public void setTempConsigne(float tempConsigne);
+	
+	/**
+	 * Recupère la température de consigne, en °C.
+	 */
+	public float getConsigneTemperature();
+
+	/**
+	 * Renvoie TRUE si la consigne d'allumage est activée.
+	 */
+	public boolean isConsigneAllumage();
+
+	/**
+	 * Renvoie TRUE si l'alerte de détection de liquéfaction est activée. 
+	 */
+	public boolean isAlertLiquefaction();
+
+	/**
+	 * Renvoie TRUE si l'alerte d'écart de température est activée.
+	 */
+	public boolean isAlertTempGap();
 	
 }

@@ -1,4 +1,4 @@
-package abstractions;
+package fr.exia.pmf.abstractions;
 
 public interface IRegulatorListener {
 

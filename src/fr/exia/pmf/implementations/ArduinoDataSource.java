@@ -1,4 +1,4 @@
-package modele;
+package fr.exia.pmf.implementations;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
-import abstractions.IConnection;
-import abstractions.IConnectionListener;
+import fr.exia.pmf.abstractions.IConnection;
+import fr.exia.pmf.abstractions.IConnectionListener;
+import fr.exia.pmf.model.Statement;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-public class SerialClass implements SerialPortEventListener, IConnection {
+public class ArduinoDataSource implements SerialPortEventListener, IConnection {
 	
 	private int ordre = 1;
 	
@@ -39,7 +40,7 @@ public class SerialClass implements SerialPortEventListener, IConnection {
 	/** Default bits per second for COM port. */
 	public static final int DATA_RATE = 9600;
 
-	public SerialClass() {
+	public ArduinoDataSource() {
 		listeners = new ArrayList<IConnectionListener>();
 	}
 	
@@ -118,17 +119,17 @@ public class SerialClass implements SerialPortEventListener, IConnection {
 				//System.out.println("Données reçu H : " + inputLine + " %");
 				switch (ordre) {
 				case 1:
-					System.out.println("Données reçu H : " + inputLine + " %");
+//					System.out.println("Données reçu H : " + inputLine + " %");
 					//DataArduino.addHumidity(Float.parseFloat(inputLine));
 					h = Float.parseFloat(inputLine);
 					break;
 				case 2:
-					System.out.println("Données reçu TempInt : " + inputLine + "°C");
+//					System.out.println("Données reçu TempInt : " + inputLine + "°C");
 					//DataArduino.addTempInt(Float.parseFloat(inputLine));
 					in = Float.parseFloat(inputLine);
 					break;
 				case 3:
-					System.out.println("Données reçu TempExt : " + inputLine + "°C");
+//					System.out.println("Données reçu TempExt : " + inputLine + "°C");
 					//DataArduino.addTempExt(Float.parseFloat(inputLine));
 					out = Float.parseFloat(inputLine);
 					break;
