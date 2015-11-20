@@ -56,7 +56,7 @@ public class RegulationSimple implements IRegulator {
 		boolean isTempGap = false;
 		if (this.histoDate == null || new Date().getTime() - this.histoDate.getTime() < 2000) {
 			// On check la variation
-			isTempGap = (data.getInteriorTemperature() - this.histoIn > 0.3);
+			isTempGap = (data.getInteriorTemperature() - this.histoIn > .3);
 			// Et on mémoire les nouvelles données
 			this.histoDate = new Date();
 			this.histoIn = data.getInteriorTemperature();

@@ -98,9 +98,6 @@ public class WindowsV2 extends JFrame {
 		labelConsigneTemp.setFont(new Font("Tahoma", Font.PLAIN, 28));
 		labelConsigneTemp.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		labelConsignePower = new JLabel("Allumage OFF");
-		labelConsignePower.setIcon(ICON_OFF);
-		
 		btnConsignePlus = new JButton("Consigne +");
 		btnConsigneMoins = new JButton("Consigne -");
 		
@@ -115,47 +112,52 @@ public class WindowsV2 extends JFrame {
 		JLabel lblNewLabel_2 = new JLabel("R\u00E9alis\u00E9 par Meltzer, Guerboukha, Jach, Allen, Kouevi");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		
+		JLabel lblGestionDeRfrigrateur = new JLabel("Exia.Cesi - Projet de 1\u00E8re ann\u00E9e Cycle Ing\u00E9nieur");
+		lblGestionDeRfrigrateur.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		
 		GroupLayout gl_panelRight = new GroupLayout(panelRight);
 		gl_panelRight.setHorizontalGroup(
 			gl_panelRight.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelRight.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panelRight.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(lblConsigne, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(labelConsigneTemp, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
-					.addGap(28)
+					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(labelConsigneTemp, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblConsigne, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel_2)
+						.addComponent(lblGestionDeRfrigrateur, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panelRight.createSequentialGroup()
 							.addComponent(btnConsigneMoins)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnConsignePlus))
-						.addGroup(gl_panelRight.createSequentialGroup()
-							.addComponent(alertTempGap)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(alertCondensation))
-						.addComponent(labelConsignePower))
-					.addGap(113))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnConsignePlus)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
+								.addComponent(alertCondensation)
+								.addComponent(alertTempGap))
+							.addGap(12))
+						.addComponent(lblNewLabel_2))
+					.addGap(12))
 		);
 		gl_panelRight.setVerticalGroup(
 			gl_panelRight.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelRight.createSequentialGroup()
-					.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblConsigne)
-						.addComponent(labelConsignePower))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addContainerGap()
 					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
-						.addComponent(labelConsigneTemp, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
 						.addGroup(gl_panelRight.createSequentialGroup()
-							.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
-								.addComponent(alertTempGap)
-								.addComponent(alertCondensation))
+							.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblConsigne)
+								.addComponent(alertTempGap))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
-								.addComponent(btnConsigneMoins, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btnConsignePlus, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-							.addComponent(lblNewLabel_2)))
+								.addComponent(labelConsigneTemp, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panelRight.createSequentialGroup()
+									.addComponent(alertCondensation)
+									.addPreferredGap(ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+									.addComponent(lblNewLabel_2))
+								.addComponent(lblGestionDeRfrigrateur, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
+							.addComponent(btnConsigneMoins, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+							.addComponent(btnConsignePlus, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		panelRight.setLayout(gl_panelRight);
@@ -220,16 +222,27 @@ public class WindowsV2 extends JFrame {
 		lblNewLabel_1.setFont(new Font("Arial Narrow", Font.PLAIN, 26));
 		lblNewLabel_1.setForeground(Color.WHITE);
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		labelConsignePower = new JLabel("Allumage OFF");
+		labelConsignePower.setFont(new Font("Tahoma", Font.BOLD, 13));
+		labelConsignePower.setIcon(ICON_OFF);
 		GroupLayout gl_panelTop = new GroupLayout(panelTop);
 		gl_panelTop.setHorizontalGroup(
-			gl_panelTop.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_panelTop.createSequentialGroup()
+			gl_panelTop.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panelTop.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE))
+					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(labelConsignePower)
+					.addContainerGap())
 		);
 		gl_panelTop.setVerticalGroup(
 			gl_panelTop.createParallelGroup(Alignment.LEADING)
 				.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+				.addGroup(Alignment.TRAILING, gl_panelTop.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(labelConsignePower, GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+					.addGap(11))
 		);
 		panelTop.setLayout(gl_panelTop);
 		getContentPane().setLayout(groupLayout);
