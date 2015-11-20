@@ -42,7 +42,7 @@ public class WindowsV2 extends JFrame {
 	 */
 	public WindowsV2() {
 		
-		setBounds(100, 100, 843, 418);
+		setBounds(100, 100, 869, 418);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setTitle("USB Frigo Chargeur Plus");
@@ -99,14 +99,20 @@ public class WindowsV2 extends JFrame {
 		labelConsigneTemp.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		btnConsignePlus = new JButton("Consigne +");
+		btnConsignePlus.setBackground(Color.ORANGE);
+		btnConsignePlus.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnConsigneMoins = new JButton("Consigne -");
+		btnConsigneMoins.setBackground(Color.ORANGE);
+		btnConsigneMoins.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		alertCondensation = new JLabel("Condensation !");
-		alertCondensation.setForeground(Color.RED);
+		alertCondensation.setFont(new Font("Tahoma", Font.BOLD, 11));
+		alertCondensation.setForeground(new Color(241, 61, 7));
 		alertCondensation.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/alert.png")));
 		
 		alertTempGap = new JLabel("Chute de T\u00B0 !");
-		alertTempGap.setForeground(Color.RED);
+		alertTempGap.setFont(new Font("Tahoma", Font.BOLD, 11));
+		alertTempGap.setForeground(new Color(241, 61, 7));
 		alertTempGap.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/alert.png")));
 		
 		JLabel lblNewLabel_2 = new JLabel("R\u00E9alis\u00E9 par Meltzer, Guerboukha, Jach, Allen, Kouevi");
@@ -125,18 +131,17 @@ public class WindowsV2 extends JFrame {
 						.addComponent(lblConsigne, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblGestionDeRfrigrateur, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panelRight.createSequentialGroup()
 							.addComponent(btnConsigneMoins)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnConsignePlus)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_panelRight.createParallelGroup(Alignment.LEADING)
-								.addComponent(alertCondensation)
-								.addComponent(alertTempGap))
-							.addGap(12))
-						.addComponent(lblNewLabel_2))
-					.addGap(12))
+								.addComponent(alertTempGap, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+								.addComponent(alertCondensation, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
+						.addComponent(lblNewLabel_2)
+						.addComponent(lblGestionDeRfrigrateur, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap())
 		);
 		gl_panelRight.setVerticalGroup(
 			gl_panelRight.createParallelGroup(Alignment.LEADING)
@@ -152,7 +157,7 @@ public class WindowsV2 extends JFrame {
 								.addComponent(labelConsigneTemp, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
 								.addGroup(gl_panelRight.createSequentialGroup()
 									.addComponent(alertCondensation)
-									.addPreferredGap(ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+									.addPreferredGap(ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
 									.addComponent(lblNewLabel_2))
 								.addComponent(lblGestionDeRfrigrateur, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
