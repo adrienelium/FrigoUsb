@@ -2,7 +2,7 @@ package fr.exia.pmf.abstractions;
 
 import fr.exia.pmf.model.Statement;
 
-public interface IConnection {
+public interface IDataConnection {
 	
 	/**
 	 * Initialise le système.
@@ -19,12 +19,12 @@ public interface IConnection {
 	/**
 	 * Ajouter un observateur.
 	 */
-	public void addListener(IConnectionListener obs);
+	public void addListener(IDataConnectionListener obs);
 	
 	/**
 	 * Retirer un observateur.
 	 */
-	public void removeListener(IConnectionListener obs);
+	public void removeListener(IDataConnectionListener obs);
 	
 	/**
 	 * Notifier les observateurs qu'une nouvelle donnée a été lue.

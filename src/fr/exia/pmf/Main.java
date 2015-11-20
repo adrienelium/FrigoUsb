@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import fr.exia.pmf.abstractions.IConnection;
+import fr.exia.pmf.abstractions.IDataConnection;
 import fr.exia.pmf.abstractions.IRegulator;
 import fr.exia.pmf.implementations.RandomDataSource;
 import fr.exia.pmf.implementations.ModelizedDataSource;
@@ -21,10 +21,10 @@ public class Main {
 	public static void main(String[] ag) {
 		
 		// Logs
-		boolean PRODUCTION = false;
+		boolean PRODUCTION = true;
 		
 		// On obtient une implémentation de la liaison données
-		IConnection datalink = getDataLinkImplementation();
+		IDataConnection datalink = getDataLinkImplementation();
 
 		// On fabrique une logique de régulation
 		IRegulator regulator = new RegulationSimple(!PRODUCTION);
@@ -60,9 +60,9 @@ public class Main {
 
 	}
 
-	private static IConnection getDataLinkImplementation() {
+	private static IDataConnection getDataLinkImplementation() {
 		// On choisit une implémentation valide de la source de donnée
-		IConnection obj = chooseImplementation(
+		IDataConnection obj = chooseImplementation(
 				new ArduinoDataSource(),
 				new ModelizedDataSource(),
 				new RandomDataSource());
@@ -80,9 +80,9 @@ public class Main {
 		return obj;
 	}
 	
-	private static IConnection chooseImplementation(IConnection... impls) {
+	private static IDataConnection chooseImplementation(IDataConnection... impls) {
 		// On parcours les implémentations
-		for (IConnection impl : impls) {
+		for (IDataConnection impl : impls) {
 			// On tente d'initialiser 
 			try {
 				impl.init();

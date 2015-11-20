@@ -2,23 +2,23 @@ package fr.exia.pmf.implementations;
 
 import java.awt.EventQueue;
 
-import fr.exia.pmf.abstractions.IConnection;
-import fr.exia.pmf.abstractions.IConnectionListener;
+import fr.exia.pmf.abstractions.IDataConnection;
+import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.abstractions.IRegulator;
 import fr.exia.pmf.abstractions.IRegulatorListener;
 import fr.exia.pmf.model.Statement;
 import fr.exia.pmf.vue.WindowsV2;
 
-public class LogiqueApplicative implements IConnectionListener, IRegulatorListener {
+public class LogiqueApplicative implements IDataConnectionListener, IRegulatorListener {
 	
 	private WindowsV2 view;
-	private IConnection datalink;
+	private IDataConnection datalink;
 	private IRegulator regulator;
 
 	/**
 	 * Démarrer toute la logique applicative.
 	 */
-	public void start(WindowsV2 view, IConnection datalink, IRegulator regulator) {
+	public void start(WindowsV2 view, IDataConnection datalink, IRegulator regulator) {
 		
 		// On conserve les références
 		this.view = view;

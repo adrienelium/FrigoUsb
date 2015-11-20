@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
-import fr.exia.pmf.abstractions.IConnection;
-import fr.exia.pmf.abstractions.IConnectionListener;
+import fr.exia.pmf.abstractions.IDataConnection;
+import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.model.Statement;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-public class ArduinoDataSource implements SerialPortEventListener, IConnection {
+public class ArduinoDataSource implements SerialPortEventListener, IDataConnection {
 	
 	private int ordre = 1;
 	
@@ -23,7 +23,7 @@ public class ArduinoDataSource implements SerialPortEventListener, IConnection {
 	private float in = 0;
 	private float out = 0;
 	
-	private ArrayList<IConnectionListener> listeners;
+	private ArrayList<IDataConnectionListener> listeners;
 	
 	public SerialPort serialPort;
 	/** The port we're normally going to use. */
@@ -41,7 +41,7 @@ public class ArduinoDataSource implements SerialPortEventListener, IConnection {
 	public static final int DATA_RATE = 9600;
 
 	public ArduinoDataSource() {
-		listeners = new ArrayList<IConnectionListener>();
+		listeners = new ArrayList<IDataConnectionListener>();
 	}
 	
 	@Override
@@ -184,7 +184,7 @@ public class ArduinoDataSource implements SerialPortEventListener, IConnection {
 	}
 
 	@Override
-	public void addListener(IConnectionListener obs) {
+	public void addListener(IDataConnectionListener obs) {
 		listeners.add(obs);
 	}
 
@@ -194,7 +194,7 @@ public class ArduinoDataSource implements SerialPortEventListener, IConnection {
 	}
 
 	@Override
-	public void removeListener(IConnectionListener obs) {
+	public void removeListener(IDataConnectionListener obs) {
 		listeners.remove(obs);
 	}
 

@@ -1,6 +1,6 @@
 package fr.exia.pmf.abstractions;
 
-public interface IRegulator extends IConnectionListener {
+public interface IRegulator extends IDataConnectionListener {
 
 	/**
 	 * Ajouter un observateur.

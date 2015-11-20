@@ -21,12 +21,12 @@ import javax.swing.UIManager;
 
 import org.jfree.chart.ChartPanel;
 
-import fr.exia.pmf.abstractions.IConnectionListener;
+import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.abstractions.IRegulatorListener;
 import fr.exia.pmf.implementations.RegulationSimple;
 import fr.exia.pmf.model.Statement;
 
-public class WindowsV1 implements ActionListener, IConnectionListener, IRegulatorListener {
+public class WindowsV1 implements ActionListener, IDataConnectionListener, IRegulatorListener {
 
 	private JFrame frame;
 	

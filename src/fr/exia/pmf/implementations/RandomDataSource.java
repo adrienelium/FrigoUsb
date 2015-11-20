@@ -2,17 +2,17 @@ package fr.exia.pmf.implementations;
 
 import java.util.ArrayList;
 
-import fr.exia.pmf.abstractions.IConnection;
-import fr.exia.pmf.abstractions.IConnectionListener;
+import fr.exia.pmf.abstractions.IDataConnection;
+import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.model.Statement;
 
-public class RandomDataSource extends Thread implements IConnection {
+public class RandomDataSource extends Thread implements IDataConnection {
 
-	private ArrayList<IConnectionListener> listeners;
+	private ArrayList<IDataConnectionListener> listeners;
 	private boolean enabled;
 	
 	public RandomDataSource() {
-		listeners = new ArrayList<IConnectionListener>();
+		listeners = new ArrayList<IDataConnectionListener>();
 	}
 
 	@Override
@@ -46,12 +46,12 @@ public class RandomDataSource extends Thread implements IConnection {
 	}
 	
 	@Override
-	public void addListener(IConnectionListener obs) {
+	public void addListener(IDataConnectionListener obs) {
 		listeners.add(obs);
 	}
 
 	@Override
-	public void removeListener(IConnectionListener obs) {
+	public void removeListener(IDataConnectionListener obs) {
 		listeners.remove(obs);
 	}
 
