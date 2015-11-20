@@ -12,7 +12,9 @@ public class RegulationSimple implements IRegulator {
 	
 	private float consigneTemperature = 16.0f;
 	private boolean consigneAllumage = false;
+	
 	private double histoIn;
+	private Date histoDate;
 	
 	private boolean alertCondensation = false;
 	private boolean alertTempGap = false;
@@ -27,8 +29,6 @@ public class RegulationSimple implements IRegulator {
 	public RegulationSimple(boolean debug) {
 
 		this.debug = debug;
-		// TODO ???
-		this.histoIn = 5000;
 		
 		this.listeners = new ArrayList<IRegulatorListener>();
 	}
@@ -52,17 +52,21 @@ public class RegulationSimple implements IRegulator {
 		}
 		
 		// On détecte les forts écarts de température
-		double delta = data.getInteriorTemperature() - this.histoIn;
-		boolean isTempGap = delta >= 2 && this.histoIn != 5000;
+		// Variation supérieure à X °C en 2 secondes
+		boolean isTempGap = false;
+		if (this.histoDate == null || new Date().getTime() - this.histoDate.getTime() < 2000) {
+			// On check la variation
+			isTempGap = (data.getInteriorTemperature() - this.histoIn > 0.3);
+			// Et on mémoire les nouvelles données
+			this.histoDate = new Date();
+			this.histoIn = data.getInteriorTemperature();
+		}
 		if (isTempGap != alertTempGap) {
 			// On mémorise le nouvel état
 			alertTempGap = isTempGap;
 			// En cas de changement on envoie un event
 			notifyAlertTemperatureGap(isTempGap);
 		}
-		
-		// TODO C'est étrange ça... le temps n'est pas pris en compte ?
-		this.histoIn = data.getInteriorTemperature();
 		
 		// On détermine l'état de la consigne d'allumage
 		boolean consigneAllumage = data.getInteriorTemperature() > consigneTemperature;
