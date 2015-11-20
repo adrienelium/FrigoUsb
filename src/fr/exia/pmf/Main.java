@@ -45,7 +45,7 @@ public class Main {
 				
 				// En production on lève une alerte si on est sur des fausses données
 				if (PRODUCTION && !(datalink instanceof ArduinoDataSource)) {
-					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison à l'Arduino."
+					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison avec l'Arduino."
 							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
 				}
 				

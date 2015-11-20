@@ -76,6 +76,11 @@ public class LineChart extends ApplicationFrame{
 		  
 		  plot.getRangeAxis().setRange(new Range(5, 28));
 		  plot.getRangeAxis().setTickLabelPaint(new Color(200,200,200));
+		  
+//		  plot.setBackgroundPaint(new Color(77,77,77));
+		  lineChart.getLegend().setBackgroundPaint(new Color(77,77,77));
+		  lineChart.getLegend().setItemPaint(new Color(200,200,200));
+		  lineChart.getLegend().setBorder(0, 0, 0, 0);
 	   }
 
 	private XYSeriesCollection createDataset( )

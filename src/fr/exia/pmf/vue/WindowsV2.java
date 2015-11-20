@@ -185,7 +185,7 @@ public class WindowsV2 extends JFrame {
 		
 		labelHumitidy = new JLabel("0 %");
 		labelHumitidy.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		labelHumitidy.setForeground(new Color(66, 255, 66));
+		//labelHumitidy.setForeground(new Color(66, 255, 66));
 		labelHumitidy.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_panelLeft = new GroupLayout(panelLeft);
 		gl_panelLeft.setHorizontalGroup(
