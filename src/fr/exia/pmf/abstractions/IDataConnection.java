@@ -51,4 +51,9 @@ public interface IDataConnection {
 	 */
 	public boolean isPowerEnabled();
 
+	/**
+	 * Temps d'allumage depuis le début.
+	 */
+	public long getPowerUptime();
+	
 }

@@ -26,7 +26,7 @@ public class LineChart extends ApplicationFrame{
 	private XYSeries tempOut;
 	private XYSeries tempIn;
 	
-	private int compteur;
+	private long compteur;
 	public ValueMarker mark;
 	
 	public LineChart(String applicationTitle , String chartTitle)

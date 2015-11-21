@@ -1,8 +1,9 @@
 package fr.exia.pmf.implementations;
 
+import fr.exia.pmf.abstractions.AbstractDataConnection;
 import fr.exia.pmf.model.Statement;
 
-public class RandomDataSource extends AbstractDataSource implements Runnable {
+public class RandomDataSource extends AbstractDataConnection implements Runnable {
 
 	private Thread thread;
 	

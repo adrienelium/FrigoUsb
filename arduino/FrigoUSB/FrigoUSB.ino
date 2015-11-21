@@ -4,7 +4,7 @@
 // L'arduino va envoyer sur la liaison série des trames de données sous cette forme :
 // D:<Taux humidité interne>;<Temperature interne>;<Temperature externe>;<CRC>\n
 // Chaque ligne lue contient une trame.
-// Le CRC est une simplement la somme des valeurs.
+// Le CRC est simplement la somme des valeurs.
 // Toutes les valeurs peuvent renvoyer "nan" (Not a Number) en cas d'erreur.
 
 // Il est possible de contrôle l'allumage et l'extinction du réfrigérateur en envoyant

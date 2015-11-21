@@ -26,10 +26,6 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	private IDataConnection datalink;
 	private IRegulator regulator;
 
-	// Temps en secondes
-	private long tempsAllumage = 0;
-	private Date powerOnTime;
-
 	/**
 	 * Démarrer toute la logique applicative.
 	 */
@@ -93,7 +89,7 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 			// On ajoute la donnée au chart
 			view.chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());
 			// On ajoute de la conso quand le frigo est allumé
-			double Wh = getPowerUptime() / 3600d * PUISSANCE_FRIGO;
+			double Wh = datalink.getPowerUptime() / 3600d * PUISSANCE_FRIGO;
 			double kWh = Wh / 1000d;
 			double prix = kWh * TARIF_KWH;
 			String conso;
@@ -118,17 +114,6 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 		});
 	}
 	
-	/**
-	 * @return En secondes
-	 */
-	public long getPowerUptime() {
-		long time = tempsAllumage;
-		if (powerOnTime != null) {
-			time += (new Date().getTime() - powerOnTime.getTime()) / 1000;
-		}
-		return time;
-	}
-
 	/**
 	 * Quand la consigne change, on l'envoi à la source de données.
 	 */
@@ -163,16 +148,6 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	 */
 	@Override
 	public void onPowerStatusChanged(boolean powerOn) {
-
-		// On incrémente le temps d'allumage du frigo
-		if (powerOn) {
-			this.powerOnTime = new Date();
-		}
-		else {
-			this.tempsAllumage = getPowerUptime();
-			this.powerOnTime = null;
-		}
-
 		EventQueue.invokeLater(() -> {
 			// On met à jour la vue
 			view.labelConsignePower.setText(String.format("Allumage %s", powerOn ? "ON " : "OFF"));

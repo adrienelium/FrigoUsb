@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.TooManyListenersException;
 
+import fr.exia.pmf.abstractions.AbstractDataConnection;
 import fr.exia.pmf.model.Statement;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-public class ArduinoDataSource extends AbstractDataSource implements SerialPortEventListener {
+public class ArduinoDataSource extends AbstractDataConnection implements SerialPortEventListener {
 	
 	/** Milliseconds to block while waiting for port open */
 	public static final int TIME_OUT = 2000;

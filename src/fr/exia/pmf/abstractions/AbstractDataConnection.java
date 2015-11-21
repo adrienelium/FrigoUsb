@@ -1,12 +1,11 @@
-package fr.exia.pmf.implementations;
+package fr.exia.pmf.abstractions;
 
 import java.util.ArrayList;
+import java.util.Date;
 
-import fr.exia.pmf.abstractions.IDataConnection;
-import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.model.Statement;
 
-public abstract class AbstractDataSource implements IDataConnection {
+public abstract class AbstractDataConnection implements IDataConnection {
 
 	/** Les listeners de la source de données */
 	private ArrayList<IDataConnectionListener> listeners;
@@ -14,7 +13,11 @@ public abstract class AbstractDataSource implements IDataConnection {
 	/** Etat d'activation de l'alimentation du réfrigérateur */
 	protected boolean powerEnabled = false;
 	
-	public AbstractDataSource() {
+	// Temps en secondes
+	private long tempsAllumage = 0;
+	private Date powerOnTime;
+	
+	public AbstractDataConnection() {
 		listeners = new ArrayList<IDataConnectionListener>();
 	}
 	
@@ -35,6 +38,14 @@ public abstract class AbstractDataSource implements IDataConnection {
 	
 	@Override
 	public void notifyListeners(boolean powerOn) {
+		// On incrémente le temps d'allumage du frigo
+		if (powerOn) {
+			this.powerOnTime = new Date();
+		}
+		else {
+			this.tempsAllumage = getPowerUptime();
+			this.powerOnTime = null;
+		}
 		listeners.forEach(observer -> observer.onPowerStatusChanged(powerOn));
 	}
 
@@ -51,4 +62,14 @@ public abstract class AbstractDataSource implements IDataConnection {
 		return this.powerEnabled;
 	}
 	
+	/**
+	 * @return En secondes
+	 */
+	public long getPowerUptime() {
+		long time = tempsAllumage;
+		if (powerOnTime != null) {
+			time += (new Date().getTime() - powerOnTime.getTime()) / 1000;
+		}
+		return time;
+	}
 }
