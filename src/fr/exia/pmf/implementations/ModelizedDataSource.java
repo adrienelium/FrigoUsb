@@ -18,7 +18,7 @@ public class ModelizedDataSource extends RandomDataSource {
 	private double pasVariationChaud = 0.2d;
 	
 	// Puissance maximale du frigo
-	private double variationFroidMax = 0.8d;
+	private double variationFroidMax = 0.9d;
 	
 	// Cible pour modifier la temperature extérieure
 	private double cibleTempExt;
