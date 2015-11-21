@@ -31,6 +31,7 @@ public class WindowsV2 extends JFrame {
 	public JLabel labelTempInt;
 	public JLabel labelTempExt;
 	public JLabel labelHumitidy;
+	public JLabel labelConsoWatt;
 	public JLabel alertCondensation;
 	public JLabel alertTempGap;
 	public LineChart chart;
@@ -118,8 +119,8 @@ public class WindowsV2 extends JFrame {
 		JLabel lblNewLabel_2 = new JLabel("R\u00E9alis\u00E9 par Meltzer, Guerboukha, Jach, Allen, Kouevi");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		
-		JLabel lblGestionDeRfrigrateur = new JLabel("Exia.Cesi - Projet de 1\u00E8re ann\u00E9e Cycle Ing\u00E9nieur");
-		lblGestionDeRfrigrateur.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		labelConsoWatt = new JLabel("Consommation : 0 Wh (0 \u20AC)");
+		labelConsoWatt.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		
 		GroupLayout gl_panelRight = new GroupLayout(panelRight);
 		gl_panelRight.setHorizontalGroup(
@@ -140,7 +141,7 @@ public class WindowsV2 extends JFrame {
 								.addComponent(alertTempGap, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
 								.addComponent(alertCondensation, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)))
 						.addComponent(lblNewLabel_2)
-						.addComponent(lblGestionDeRfrigrateur, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
+						.addComponent(labelConsoWatt, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		gl_panelRight.setVerticalGroup(
@@ -159,7 +160,7 @@ public class WindowsV2 extends JFrame {
 									.addComponent(alertCondensation)
 									.addPreferredGap(ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
 									.addComponent(lblNewLabel_2))
-								.addComponent(lblGestionDeRfrigrateur, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)))
+								.addComponent(labelConsoWatt, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_panelRight.createParallelGroup(Alignment.BASELINE)
 							.addComponent(btnConsigneMoins, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
 							.addComponent(btnConsignePlus, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)))

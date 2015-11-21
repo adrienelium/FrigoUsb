@@ -1,6 +1,7 @@
 package fr.exia.pmf.implementations;
 
 import java.awt.EventQueue;
+import java.util.Date;
 
 import fr.exia.pmf.abstractions.IDataConnection;
 import fr.exia.pmf.abstractions.IDataConnectionListener;
@@ -11,9 +12,19 @@ import fr.exia.pmf.vue.WindowsV2;
 
 public class LogiqueApplicative implements IDataConnectionListener, IRegulatorListener {
 	
+	// Puissance du réfrigérateur en Watt
+	public static long PUISSANCE_FRIGO = 300;
+	
+	// Prix EDF en € au kWh au 21/11/15
+	private static final double TARIF_KWH = 0.14040d;
+	
 	private WindowsV2 view;
 	private IDataConnection datalink;
 	private IRegulator regulator;
+
+	// Temps en secondes
+	private long tempsAllumage = 0;
+	private Date powerOnTime;
 
 	/**
 	 * Démarrer toute la logique applicative.
@@ -65,7 +76,19 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 			view.labelTempInt.setText(String.format("%.2f °C", data.getInteriorTemperature()));
 			view.labelHumitidy.setText(String.format("%.1f", data.getHumidityRate()) + "%");
 			// On ajoute la donnée au chart
-			view.chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());	
+			view.chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());
+			// On ajoute de la conso quand le frigo est allumé
+			double Wh = getPowerUptime() / 3600d * PUISSANCE_FRIGO;
+			double kWh = Wh / 1000d;
+			double prix = kWh * TARIF_KWH;
+			String conso;
+			if (Wh > 1000) {
+				conso = String.format("Consommation : %.2f kWh (%.4f \u20AC)", kWh, prix);
+			}
+			else {
+				conso = String.format("Consommation : %.0f Wh (%.4f \u20AC)", Wh, prix);
+			}
+			view.labelConsoWatt.setText(conso);
 		});
 	}
 	
@@ -79,12 +102,33 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 			this.view.chart.mark.setValue(temp);
 		});
 	}
+	
+	/**
+	 * @return En secondes
+	 */
+	public long getPowerUptime() {
+		long time = tempsAllumage;
+		if (powerOnTime != null) {
+			time += (new Date().getTime() - powerOnTime.getTime()) / 1000;
+		}
+		return time;
+	}
 
 	/**
 	 * On met à jour l'IHM quand la consigne d'allumage change.
 	 */
 	@Override
 	public void onConsigneAllumageChanged(boolean enabled) {
+
+		// On incrémente le temps d'allumage du frigo
+		if (enabled) {
+			this.powerOnTime = new Date();
+		}
+		else {
+			this.tempsAllumage = getPowerUptime();
+			this.powerOnTime = null;
+		}
+
 		EventQueue.invokeLater(() -> {
 			// On met à jour la vue
 			view.labelConsignePower.setText(String.format("Allumage %s", enabled ? "ON " : "OFF"));

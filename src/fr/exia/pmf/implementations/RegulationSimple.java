@@ -52,11 +52,11 @@ public class RegulationSimple implements IRegulator {
 		}
 		
 		// On détecte les forts écarts de température
-		// Variation supérieure à X °C en 2 secondes
-		boolean isTempGap = false;
-		if (this.histoDate == null || new Date().getTime() - this.histoDate.getTime() < 2000) {
+		// Variation supérieure à 1 °C en 10 secondes
+		boolean isTempGap = alertTempGap;
+		if (this.histoDate == null || new Date().getTime() - this.histoDate.getTime() < 10000) {
 			// On check la variation
-			isTempGap = (data.getInteriorTemperature() - this.histoIn > .4);
+			isTempGap = (data.getInteriorTemperature() - this.histoIn > 1);
 			// Et on mémoire les nouvelles données
 			this.histoDate = new Date();
 			this.histoIn = data.getInteriorTemperature();
@@ -76,7 +76,7 @@ public class RegulationSimple implements IRegulator {
 			if (consigneAllumage) {
 				// Si on a allumé le frigo il y a moins de 2 secondes on ne le rallume pas
 				// On simule un système d'économie d'énergie !
-				if (lastAllumageOn != null && new Date().getTime() - lastAllumageOn.getTime() < 200) {
+				if (lastAllumageOn != null && new Date().getTime() - lastAllumageOn.getTime() < 2000) {
 					return;
 				}
 				lastAllumageOn = new Date(); 
