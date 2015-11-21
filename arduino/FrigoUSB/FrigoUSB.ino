@@ -82,7 +82,6 @@ void loop() {
   // On envoie une trame de données sur la liaison série
   while (writting) {} // synchro
   writting = true;
-  digitalWrite(PIN_ONBOARD_LED, HIGH); // On allume la LED de l'arduino pour indiquer l'activité
   Serial.print("D:");
   Serial.print(Hin);
   Serial.print(';');
@@ -91,7 +90,6 @@ void loop() {
   Serial.print(Tout);
   Serial.print(';');
   Serial.println(Hin + Tin + Tout); // CRC
-  digitalWrite(PIN_ONBOARD_LED, LOW);
   writting = false;
 }
 
@@ -108,11 +106,13 @@ void serialEvent()
     // Allumage du réfrigérateur
     if (readVal == 1)
     {
+      digitalWrite(PIN_ONBOARD_LED, HIGH); // On allume la LED de l'arduino pour indiquer l'activité
       digitalWrite(PIN_FRIGO, HIGH);
     }
     // Extinction du réfrigérateur
     else if (readVal == 2)
     {
+      digitalWrite(PIN_ONBOARD_LED, LOW); // On eteint la LED de l'arduino pour indiquer la coupure
       digitalWrite(PIN_FRIGO, LOW);
     }
     else {

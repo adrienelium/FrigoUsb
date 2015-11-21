@@ -1,6 +1,8 @@
 package fr.exia.pmf.implementations;
 
 import java.awt.EventQueue;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Date;
 
 import fr.exia.pmf.abstractions.IDataConnection;
@@ -54,6 +56,14 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 		
 		// On ajoute le comportement de fullscreen
 		view.btnFullscreen.addActionListener(new FullScreenEffect(view));
+
+		// On ferme l'application proprement quand la fenêtre se ferme
+		view.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent arg0) {
+				// On ferme la connexion aux données
+				datalink.stop();
+			}
+		});
 		
 		// Le régulateur a besoin d'une connexion à la donnée pour travailler
 		this.datalink.addListener(regulator);

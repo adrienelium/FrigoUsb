@@ -45,4 +45,9 @@ public class RandomDataSource extends AbstractDataSource implements Runnable {
 		}
 	}
 
+	@Override
+	public void stop() {
+		thread.interrupt();
+	}
+
 }

@@ -77,6 +77,7 @@ public class ArduinoDataSource extends AbstractDataSource implements SerialPortE
 	@Override
 	public void start() {
 		try {
+			System.out.println("[Arduino] Start");
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);
 		}
@@ -86,8 +87,10 @@ public class ArduinoDataSource extends AbstractDataSource implements SerialPortE
 		
 	}
 
-	public synchronized void close() {
+	@Override
+	public synchronized void stop() {
 		if (serialPort != null) {
+			System.out.println("[Arduino] Stop");
 			serialPort.removeEventListener();
 			serialPort.close();
 		}
@@ -98,6 +101,7 @@ public class ArduinoDataSource extends AbstractDataSource implements SerialPortE
 		
 		// Uniquement les évents d'arrivée de données
 		if (oEvent.getEventType() != SerialPortEvent.DATA_AVAILABLE) {
+			System.out.println("[Arduino] Event : " + oEvent.getEventType());
 			return;
 		}
 		

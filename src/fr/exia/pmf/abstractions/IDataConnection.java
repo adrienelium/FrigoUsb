@@ -17,6 +17,11 @@ public interface IDataConnection {
 	public void start();
 	
 	/**
+	 * Arrêter le système.
+	 */
+	public void stop();
+	
+	/**
 	 * Ajouter un observateur.
 	 */
 	public void addListener(IDataConnectionListener obs);
