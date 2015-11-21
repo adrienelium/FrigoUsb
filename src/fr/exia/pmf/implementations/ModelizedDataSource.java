@@ -8,6 +8,9 @@ public class ModelizedDataSource extends RandomDataSource {
 	private double Tin;
 	private double Tout;
 	
+	// Cible pour modifier la temperature extérieure
+	private double cibleTout;
+	
 	// L'équivalent de froid accumulé par le générateur
 	private double variationFroid = 0d;
 	
@@ -19,9 +22,6 @@ public class ModelizedDataSource extends RandomDataSource {
 	
 	// Puissance maximale du frigo
 	private double variationFroidMax = 0.9d;
-	
-	// Cible pour modifier la temperature extérieure
-	private double cibleTout;
 	
 	@Override
 	public void init() throws Throwable {
@@ -77,7 +77,9 @@ public class ModelizedDataSource extends RandomDataSource {
 			
 			// On notifie les listeners qu'une nouvelle données est disponible
 			notifyListeners(new Statement(H, Tin, Tout));
-			sleep();
+			
+			// On sleep
+			sleep(500);
 		}
 	}
 	

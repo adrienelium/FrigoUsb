@@ -19,6 +19,7 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	// Prix EDF en € au kWh au 21/11/15
 	private static final double TARIF_KWH = 0.14040d;
 	
+	// Composants
 	private WindowsV2 view;
 	private IDataConnection datalink;
 	private IRegulator regulator;
@@ -119,27 +120,12 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	}
 
 	/**
-	 * On met à jour l'IHM quand la consigne d'allumage change.
+	 * Quand la consigne change, on l'envoi à la source de données.
 	 */
 	@Override
 	public void onConsigneAllumageChanged(boolean enabled) {
-
-		// On incrémente le temps d'allumage du frigo
-		if (enabled) {
-			this.powerOnTime = new Date();
-		}
-		else {
-			this.tempsAllumage = getPowerUptime();
-			this.powerOnTime = null;
-		}
-
-		EventQueue.invokeLater(() -> {
-			// On met à jour la vue
-			view.labelConsignePower.setText(String.format("Allumage %s", enabled ? "ON " : "OFF"));
-			view.labelConsignePower.setIcon(enabled ? WindowsV2.ICON_YES : WindowsV2.ICON_NO);
-			// On contrôle l'allumage ou l'extinction du système
-			this.datalink.setPowerEnabled(enabled);
-		});
+		// On contrôle l'allumage ou l'extinction du système
+		this.datalink.setPowerEnabled(enabled);
 	}
 
 	/**
@@ -159,6 +145,28 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	public void onAlertTemperatureGapChanged(boolean state) {
 		EventQueue.invokeLater(() -> {
 			view.alertTempGap.setVisible(state);
+		});
+	}
+
+	/**
+	 * On met à jour l'IHM quand l'état d'allumage du frigo est confirmé par la source.
+	 */
+	@Override
+	public void onPowerStatusChanged(boolean powerOn) {
+
+		// On incrémente le temps d'allumage du frigo
+		if (powerOn) {
+			this.powerOnTime = new Date();
+		}
+		else {
+			this.tempsAllumage = getPowerUptime();
+			this.powerOnTime = null;
+		}
+
+		EventQueue.invokeLater(() -> {
+			// On met à jour la vue
+			view.labelConsignePower.setText(String.format("Allumage %s", powerOn ? "ON " : "OFF"));
+			view.labelConsignePower.setIcon(powerOn ? WindowsV2.ICON_YES : WindowsV2.ICON_NO);
 		});
 	}
 

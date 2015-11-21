@@ -4,19 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
-import fr.exia.pmf.abstractions.IDataConnection;
-import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.model.Statement;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-public class ArduinoDataSource implements SerialPortEventListener, IDataConnection {
+public class ArduinoDataSource extends AbstractDataSource implements SerialPortEventListener {
 	
 	/** Milliseconds to block while waiting for port open */
 	public static final int TIME_OUT = 2000;
@@ -33,9 +30,6 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 	/** Message d'erreur en cas de buffer vide */
 	private static final String EmptyBufferErrorMessage = "Underlying input stream returned zero bytes";
 	
-	/** Les listeners de la source de données */
-	private ArrayList<IDataConnectionListener> listeners;
-	
 	/** Liaison série avec l'arduino */
 	public SerialPort serialPort;
 	
@@ -45,16 +39,6 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 	/** Flux d'écriture sur la liaison série */
 	public OutputStream output;
 
-	/** Etat d'activation de l'alimentation du réfrigérateur */
-	private boolean powerEnabled;
-
-	/**
-	 * Constructeur
-	 */
-	public ArduinoDataSource() {
-		listeners = new ArrayList<IDataConnectionListener>();
-	}
-	
 	@Override
 	public void init() throws Throwable {
 		
@@ -85,31 +69,31 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 				SerialPort.STOPBITS_1,
 				SerialPort.PARITY_NONE);
 
-		// open the streams
+		// Open the streams
 		input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
 		output = serialPort.getOutputStream();
-		char ch = 1;
-		output.write(ch);
 	}
 
+	@Override
 	public void start() {
 		try {
 			serialPort.addEventListener(this);
 			serialPort.notifyOnDataAvailable(true);
 		}
-		catch (TooManyListenersException e) {
+		catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 		
 	}
 
-	public void close() {
+	public synchronized void close() {
 		if (serialPort != null) {
 			serialPort.removeEventListener();
 			serialPort.close();
 		}
 	}
 
+	@Override
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		
 		// Uniquement les évents d'arrivée de données
@@ -145,11 +129,11 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 				int returnCode = Integer.parseInt(inputLine.substring(2));
 				if (returnCode == 1) {
 					System.out.println("[Arduino] Réfrigérateur ON");
-					// TODO Cela pourrait lever un event
+					notifyListeners(true);
 				}
 				else if (returnCode == 2) {
 					System.out.println("[Arduino] Réfrigérateur OFF");
-					// TODO Cela pourrait lever un event
+					notifyListeners(false);
 				}
 				else {
 					System.out.println("[Arduino] Invalid feedback code: " + returnCode);
@@ -195,34 +179,14 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 	}
 
 	@Override
-	public void addListener(IDataConnectionListener obs) {
-		listeners.add(obs);
-	}
-
-	@Override
-	public void notifyListeners(Statement data) {
-		listeners.forEach(observer -> observer.onNewStatementRead(data));
-	}
-
-	@Override
-	public void removeListener(IDataConnectionListener obs) {
-		listeners.remove(obs);
-	}
-
-	@Override
 	public void setPowerEnabled(boolean value) {
 		// Uniquement en cas de changement
 		if (this.powerEnabled != value) {
 			// On change l'état
 			this.powerEnabled = value;
 			// On écrit la commande sur le bus série
-			writeData(this.powerEnabled ? "1" : "0");
+			writeData(this.powerEnabled ? "1" : "2");
 		}
-	}
-
-	@Override
-	public boolean isPowerEnabled() {
-		return this.powerEnabled;
 	}
 
 }

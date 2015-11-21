@@ -32,6 +32,11 @@ public interface IDataConnection {
 	public void notifyListeners(Statement data);
 	
 	/**
+	 * Notifier les observateurs quand l'état d'allumage du réfrigérateur est modifié.
+	 */
+	public void notifyListeners(boolean powerOn);
+	
+	/**
 	 * Activer ou désactiver l'alimentation électrique du réfrigérateur.
 	 */
 	public void setPowerEnabled(boolean value);

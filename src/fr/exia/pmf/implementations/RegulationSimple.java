@@ -16,7 +16,7 @@ public class RegulationSimple implements IRegulator {
 	private double histoIn;
 	private Date histoDate;
 	
-	private boolean alertCondensation = false;
+	private boolean alertLiquefaction = false;
 	private boolean alertTempGap = false;
 
 	private List<IRegulatorListener> listeners;
@@ -32,40 +32,18 @@ public class RegulationSimple implements IRegulator {
 	@Override
 	public void onNewStatementRead(Statement data) {
 
-		// On ramène le taux d'humidité entre 0 et 1
-		double h = data.getHumidityRate() / 100;
-		
-		// On calcule la température de rosée
-		double tempRose = Math.pow(h , 1.0/8) * (112 + (0.9 * data.getInteriorTemperature())) + (0.1 * data.getExteriorTemperature()) - 112;
-		
-		// On détecte de la condensation
-		boolean isCondensation = (tempRose >= data.getInteriorTemperature());
-		if (isCondensation != alertCondensation) {
-			// On mémorise le nouvel état
-			alertCondensation = isCondensation;
-			// En cas de changement d'état on envoie un event
-			notifyAlertCondensation(isCondensation);
-		}
+		// On détecte la possible liquéfaction
+		detectLiquefaction(data);
 		
 		// On détecte les forts écarts de température
-		// Variation supérieure à 1 °C en 3 secondes
-		boolean isTempGap = alertTempGap;
-		if (this.histoDate == null || (new Date().getTime() - this.histoDate.getTime()) >= 3000) {
-			// On check la variation
-			if (this.histoDate != null)
-				isTempGap = (data.getInteriorTemperature() - this.histoIn > 1);
-			// Et on mémorise les nouvelles données
-			this.histoDate = new Date();
-			this.histoIn = data.getInteriorTemperature();
-		}
-		if (isTempGap != alertTempGap) {
-			// On mémorise le nouvel état
-			alertTempGap = isTempGap;
-			// En cas de changement on envoie un event
-			notifyAlertTemperatureGap(isTempGap);
-		}
+		detectTemperatureGap(data);
 		
 		// On détermine l'état de la consigne d'allumage
+		applyConsigne(data);
+		
+	}
+
+	protected void applyConsigne(Statement data) {
 		// On compare à la consigne -5% pour laisser la température refroidir un peu plus
 		boolean consigneAllumage = data.getInteriorTemperature() > consigneTemperature * .95;
 		// On vérifie que la consigne a changée
@@ -84,7 +62,42 @@ public class RegulationSimple implements IRegulator {
 			// On propage un événement
 			notifyConsigneAllumageChanged(consigneAllumage);
 		}
+	}
+
+	protected void detectTemperatureGap(Statement data) {
+		// Variation supérieure à 1 °C en 3 secondes
+		boolean isTempGap = alertTempGap;
+		if (this.histoDate == null || (new Date().getTime() - this.histoDate.getTime()) >= 3000) {
+			// On check la variation
+			if (this.histoDate != null)
+				isTempGap = (data.getInteriorTemperature() - this.histoIn > 1);
+			// Et on mémorise les nouvelles données
+			this.histoDate = new Date();
+			this.histoIn = data.getInteriorTemperature();
+		}
+		if (isTempGap != alertTempGap) {
+			// On mémorise le nouvel état
+			alertTempGap = isTempGap;
+			// En cas de changement on envoie un event
+			notifyAlertTemperatureGap(isTempGap);
+		}
+	}
+
+	protected void detectLiquefaction(Statement data) {
+		// On ramène le taux d'humidité entre 0 et 1
+		double h = data.getHumidityRate() / 100;
 		
+		// On calcule la température de rosée
+		double tempRose = Math.pow(h , 1.0/8) * (112 + (0.9 * data.getInteriorTemperature())) + (0.1 * data.getExteriorTemperature()) - 112;
+		
+		// On détecte la possible liquéfaction
+		boolean isLiquefaction = (tempRose >= data.getInteriorTemperature());
+		if (isLiquefaction != alertLiquefaction) {
+			// On mémorise le nouvel état
+			alertLiquefaction = isLiquefaction;
+			// En cas de changement d'état on envoie un event
+			notifyAlertCondensation(isLiquefaction);
+		}
 	}
 
 	@Override
@@ -144,12 +157,17 @@ public class RegulationSimple implements IRegulator {
 
 	@Override
 	public boolean isAlertLiquefaction() {
-		return alertCondensation;
+		return alertLiquefaction;
 	}
 
 	@Override
 	public boolean isAlertTempGap() {
 		return alertTempGap;
+	}
+
+	@Override
+	public void onPowerStatusChanged(boolean powerOn) {
+		// Non utilisé
 	}
 	
 }

@@ -299,19 +299,18 @@ public class WindowsV1 implements ActionListener, IDataConnectionListener, IRegu
 
 	@Override
 	public void onConsigneAllumageChanged(boolean enabled) {
-		
 	}
 
 	@Override
 	public void onAlertCondensationChanged(boolean state) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onAlertTemperatureGapChanged(boolean state) {
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void onPowerStatusChanged(boolean powerOn) {
 	}
 	
 }
