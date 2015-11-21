@@ -52,12 +52,13 @@ public class RegulationSimple implements IRegulator {
 		}
 		
 		// On détecte les forts écarts de température
-		// Variation supérieure à 1 °C en 10 secondes
+		// Variation supérieure à 1 °C en 3 secondes
 		boolean isTempGap = alertTempGap;
-		if (this.histoDate == null || new Date().getTime() - this.histoDate.getTime() < 10000) {
+		if (this.histoDate == null || (new Date().getTime() - this.histoDate.getTime()) >= 3000) {
 			// On check la variation
-			isTempGap = (data.getInteriorTemperature() - this.histoIn > 1);
-			// Et on mémoire les nouvelles données
+			if (this.histoDate != null)
+				isTempGap = (data.getInteriorTemperature() - this.histoIn > 1);
+			// Et on mémorise les nouvelles données
 			this.histoDate = new Date();
 			this.histoIn = data.getInteriorTemperature();
 		}
@@ -69,14 +70,15 @@ public class RegulationSimple implements IRegulator {
 		}
 		
 		// On détermine l'état de la consigne d'allumage
-		boolean consigneAllumage = data.getInteriorTemperature() > consigneTemperature;
+		// On compare à la consigne -5% pour laisser la température refroidir un peu plus
+		boolean consigneAllumage = data.getInteriorTemperature() > consigneTemperature * .95;
 		// On vérifie que la consigne a changée
 		if (this.consigneAllumage != consigneAllumage) {
 			// On veut allumer le frigo
 			if (consigneAllumage) {
 				// Si on a allumé le frigo il y a moins de 2 secondes on ne le rallume pas
 				// On simule un système d'économie d'énergie !
-				if (lastAllumageOn != null && new Date().getTime() - lastAllumageOn.getTime() < 2000) {
+				if (lastAllumageOn != null && (new Date().getTime() - lastAllumageOn.getTime()) < 2000) {
 					return;
 				}
 				lastAllumageOn = new Date(); 

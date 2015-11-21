@@ -32,12 +32,14 @@
         <copy todir="${jar.dir}/${lib.dir}" flatten="true">
             <path refid="libraries.path"/>
         </copy>
+    	<copy file="${source.dir}/../rxtxSerial.dll" tofile="${jar.dir}/rxtxSerial.dll" />
+    	<copy file="${source.dir}/../rxtxParallel.dll" tofile="${jar.dir}/rxtxParallel.dll" />
         <jar destfile="${jar.dir}/${jar.file}" basedir="${class.dir}">
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
                 <attribute name="Class-Path" value="lib/ lib/RXTXcomm.jar lib/swingx.jar lib/substance-lite-feel.jar lib/substance-swingx.jar lib/jcommon-1.0.23.jar lib/jfreechart-1.0.19.jar lib/jfreechart-1.0.19-swt.jar" />
             </manifest>
-        </jar>  
+        </jar>
     </target>
 	
 </project>

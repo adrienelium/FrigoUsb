@@ -69,27 +69,20 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 			throw new Exception("Could not find COM port.");
 		}
 
-		try {
-			// open serial port, and use class name for the appName.
-			serialPort = (SerialPort) portId.open(this.getClass().getName(),
-					TIME_OUT);
+		// open serial port, and use class name for the appName.
+		serialPort = (SerialPort) portId.open(this.getClass().getName(), TIME_OUT);
 
-			// set port parameters
-			serialPort.setSerialPortParams(DATA_RATE,
-					SerialPort.DATABITS_8,
-					SerialPort.STOPBITS_1,
-					SerialPort.PARITY_NONE);
+		// set port parameters
+		serialPort.setSerialPortParams(DATA_RATE,
+				SerialPort.DATABITS_8,
+				SerialPort.STOPBITS_1,
+				SerialPort.PARITY_NONE);
 
-			// open the streams
-			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-			output = serialPort.getOutputStream();
-			char ch = 1;
-			output.write(ch);
-
-
-		} catch (Exception e) {
-			System.err.println(e.toString());
-		}
+		// open the streams
+		input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+		output = serialPort.getOutputStream();
+		char ch = 1;
+		output.write(ch);
 	}
 
 	public void start() {
@@ -116,21 +109,17 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 				String inputLine=input.readLine();
 				
 				
-				//System.out.println("Données reçu H : " + inputLine + " %");
 				switch (ordre) {
 				case 1:
 //					System.out.println("Données reçu H : " + inputLine + " %");
-					//DataArduino.addHumidity(Float.parseFloat(inputLine));
 					h = Float.parseFloat(inputLine);
 					break;
 				case 2:
 //					System.out.println("Données reçu TempInt : " + inputLine + "°C");
-					//DataArduino.addTempInt(Float.parseFloat(inputLine));
 					in = Float.parseFloat(inputLine);
 					break;
 				case 3:
 //					System.out.println("Données reçu TempExt : " + inputLine + "°C");
-					//DataArduino.addTempExt(Float.parseFloat(inputLine));
 					out = Float.parseFloat(inputLine);
 					break;
 				default:
@@ -143,7 +132,7 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 					sendDataObservers();
 				}
 				
-				System.out.println();
+//				System.out.println();
 				
 			} catch (Exception e) {
 				System.err.println(e.toString());
@@ -162,7 +151,7 @@ public class ArduinoDataSource implements SerialPortEventListener, IDataConnecti
 //		regul.decider();
 		
 		// Prise de décision : non, c'est à la régulation de faire les actions,
-		// et à cette classe de fournir la méthode writeData() uniquement.
+		// et à cette classe de fournir la méthode setPowerEnabled() uniquement.
 //		if(regul.isAllumer())
 //		{
 //			writeData("1");

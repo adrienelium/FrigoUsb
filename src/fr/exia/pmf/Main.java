@@ -89,6 +89,9 @@ public class Main {
 			}
 			// En cas d'erreur, on tente une autre implémentation
 			catch (Throwable e) {
+				System.out.println(String.format("Impossible d'utiliser la source de données %s : %s (%s)",
+						impl.getClass().getSimpleName(),
+						e.getMessage(), e.getClass().getSimpleName()));
 				continue;
 			}
 			// On a trouvé une implémentation valide

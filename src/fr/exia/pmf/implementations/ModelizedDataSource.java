@@ -75,9 +75,6 @@ public class ModelizedDataSource extends RandomDataSource {
 				if (cibleTempExt < 6) cibleTempExt += 3;
 			}
 			
-			// On évite cette incohérence
-			if (Tin > Tout) Tin = Tout;
-			
 			// On notifie les listeners qu'une nouvelle données est disponible
 			notifyListeners(new Statement(H, Tout, Tin));
 			sleep();
