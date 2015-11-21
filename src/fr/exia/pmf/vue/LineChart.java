@@ -93,8 +93,8 @@ public class LineChart extends ApplicationFrame{
 		dataset.addSeries(tempOut);
 		dataset.addSeries(tempIn);
 		
-		this.tempIn.setMaximumItemCount(100);
-		this.tempOut.setMaximumItemCount(100);
+		this.tempIn.setMaximumItemCount(600);
+		this.tempOut.setMaximumItemCount(600);
 		
 		return dataset;
 	}
