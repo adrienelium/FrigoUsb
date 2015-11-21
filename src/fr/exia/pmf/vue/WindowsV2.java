@@ -37,6 +37,7 @@ public class WindowsV2 extends JFrame {
 	public LineChart chart;
 	public JButton btnConsignePlus;
 	public JButton btnConsigneMoins;
+	public JButton btnFullscreen;
 
 	/**
 	 * Create the application.
@@ -111,7 +112,7 @@ public class WindowsV2 extends JFrame {
 		alertCondensation.setForeground(new Color(241, 61, 7));
 		alertCondensation.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/alert.png")));
 		
-		alertTempGap = new JLabel("Chute de T\u00B0 !");
+		alertTempGap = new JLabel("Hausse de T\u00B0 !");
 		alertTempGap.setFont(new Font("Tahoma", Font.BOLD, 11));
 		alertTempGap.setForeground(new Color(241, 61, 7));
 		alertTempGap.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/alert.png")));
@@ -232,23 +233,27 @@ public class WindowsV2 extends JFrame {
 		labelConsignePower = new JLabel("Allumage OFF");
 		labelConsignePower.setFont(new Font("Tahoma", Font.BOLD, 13));
 		labelConsignePower.setIcon(ICON_OFF);
+		
+		btnFullscreen = new JButton("");
+		btnFullscreen.setIcon(new ImageIcon(WindowsV2.class.getResource("/fr/exia/pmf/vue/fullscreen24.png")));
 		GroupLayout gl_panelTop = new GroupLayout(panelTop);
 		gl_panelTop.setHorizontalGroup(
 			gl_panelTop.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panelTop.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+					.addComponent(btnFullscreen, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(labelConsignePower, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
+					.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(labelConsignePower, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))
 		);
 		gl_panelTop.setVerticalGroup(
 			gl_panelTop.createParallelGroup(Alignment.TRAILING)
-				.addComponent(lblNewLabel_1, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
 				.addGroup(gl_panelTop.createSequentialGroup()
-					.addGap(11)
-					.addComponent(labelConsignePower, GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
-					.addGap(11))
+					.addGroup(gl_panelTop.createParallelGroup(Alignment.TRAILING)
+						.addComponent(labelConsignePower, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+						.addComponent(lblNewLabel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(btnFullscreen, GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+					.addContainerGap())
 		);
 		panelTop.setLayout(gl_panelTop);
 		getContentPane().setLayout(groupLayout);

@@ -20,16 +20,12 @@ public class RegulationSimple implements IRegulator {
 	private boolean alertTempGap = false;
 
 	private List<IRegulatorListener> listeners;
-	private boolean debug;
 	private Date lastAllumageOn = null;
 	
 	/**
 	 * Constructeur
 	 */
-	public RegulationSimple(boolean debug) {
-
-		this.debug = debug;
-		
+	public RegulationSimple() {
 		this.listeners = new ArrayList<IRegulatorListener>();
 	}
 	
@@ -114,25 +110,25 @@ public class RegulationSimple implements IRegulator {
 
 	@Override
 	public void notifyConsigneTemperatureChanged(double tempConsigne) {
-		if (debug) System.out.println("[Regulation] Consigne de température : " + tempConsigne);
+		System.out.println("[Regulation] Consigne de température : " + tempConsigne);
 		this.listeners.forEach(obs -> obs.onConsigneTemperatureChanged(tempConsigne));
 	}
 
 	@Override
 	public void notifyConsigneAllumageChanged(boolean powerState) {
-		if (debug) System.out.println("[Regulation] Consigne d'allumage : " + powerState);
+		System.out.println("[Regulation] Consigne d'allumage : " + powerState);
 		this.listeners.forEach(obs -> obs.onConsigneAllumageChanged(powerState));
 	}
 
 	@Override
 	public void notifyAlertCondensation(boolean state) {
-		if (debug) System.out.println("[Regulation] Alerte de condensation : " + state);
+		System.out.println("[Regulation] Alerte de condensation : " + state);
 		this.listeners.forEach(obs -> obs.onAlertCondensationChanged(state));
 	}
 
 	@Override
 	public void notifyAlertTemperatureGap(boolean state) {
-		if (debug) System.out.println("[Regulation] Alerte d'écart de température : " + state);
+		System.out.println("[Regulation] Alerte d'écart de température : " + state);
 		this.listeners.forEach(obs -> obs.onAlertTemperatureGapChanged(state));
 	}
 

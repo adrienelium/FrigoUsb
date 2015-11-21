@@ -8,6 +8,7 @@ import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.abstractions.IRegulator;
 import fr.exia.pmf.abstractions.IRegulatorListener;
 import fr.exia.pmf.model.Statement;
+import fr.exia.pmf.vue.FullScreenEffect;
 import fr.exia.pmf.vue.WindowsV2;
 
 public class LogiqueApplicative implements IDataConnectionListener, IRegulatorListener {
@@ -50,6 +51,9 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 			this.regulator.setTempConsigne(regulator.getConsigneTemperature() - 0.5f);
 		});
 		
+		// On ajoute le comportement de fullscreen
+		view.btnFullscreen.addActionListener(new FullScreenEffect(view));
+		
 		// Le régulateur a besoin d'une connexion à la donnée pour travailler
 		this.datalink.addListener(regulator);
 
@@ -72,8 +76,8 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	public void onNewStatementRead(Statement data) {
 		EventQueue.invokeLater(() -> {
 			// Update des labels
-			view.labelTempExt.setText(String.format("%.2f °C", data.getExteriorTemperature()));
-			view.labelTempInt.setText(String.format("%.2f °C", data.getInteriorTemperature()));
+			view.labelTempExt.setText(String.format("%.1f °C", data.getExteriorTemperature()));
+			view.labelTempInt.setText(String.format("%.1f °C", data.getInteriorTemperature()));
 			view.labelHumitidy.setText(String.format("%.1f", data.getHumidityRate()) + "%");
 			// On ajoute la donnée au chart
 			view.chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());
@@ -98,7 +102,7 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	@Override
 	public void onConsigneTemperatureChanged(double temp) {
 		EventQueue.invokeLater(() -> {
-			view.labelConsigneTemp.setText(String.format("%.2f °C", temp));
+			view.labelConsigneTemp.setText(String.format("%.1f °C", temp));
 			this.view.chart.mark.setValue(temp);
 		});
 	}

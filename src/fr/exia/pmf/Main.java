@@ -27,7 +27,7 @@ public class Main {
 		IDataConnection datalink = getDataLinkImplementation();
 
 		// On fabrique une logique de régulation
-		IRegulator regulator = new RegulationSimple(!PRODUCTION);
+		IRegulator regulator = new RegulationSimple();
 		
 		// On fabrique une logique applicative
 		LogiqueApplicative app = new LogiqueApplicative();
@@ -40,17 +40,18 @@ public class Main {
 				try {
 					UIManager.setLookAndFeel(new org.jvnet.substance.skin.SubstanceRavenGraphiteLookAndFeel());
 				} catch (UnsupportedLookAndFeelException e) {
-					System.err.println("Impossible de charger le LookAndFeel");
-				}
-				
-				// En production on lève une alerte si on est sur des fausses données
-				if (PRODUCTION && !(datalink instanceof ArduinoDataSource)) {
-					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison avec l'Arduino."
-							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
+					System.err.println("[IHM] Impossible de charger le LookAndFeel");
 				}
 				
 				// On fabrique une fenêtre
 				WindowsV2 vue = new WindowsV2();
+				
+				// En production on lève une alerte si on est sur des fausses données, et on l'indique dans le titre de la fenêtre
+				if (PRODUCTION && !(datalink instanceof ArduinoDataSource)) {
+					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison avec l'Arduino."
+							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
+					vue.setTitle(vue.getTitle() + " (Simulation)");
+				}
 				
 				// Et enfin on démarre la logique applicative
 				app.start(vue, datalink, regulator);
@@ -69,12 +70,12 @@ public class Main {
 		
 		// Aucune implémentation valide
 		if (obj == null) {
-			System.err.println("No valid implementation to run");
+			System.err.println("No valid data source implementation to run");
 			System.exit(-1);
 		}
 		
 		// On affiche l'implémentation retenue
-		System.out.println("Data source: " + obj.getClass().getSimpleName());
+		System.out.println("[DataSource] Data source: " + obj.getClass().getSimpleName());
 		
 		// Et one renvoie l'implémentation
 		return obj;
@@ -89,7 +90,7 @@ public class Main {
 			}
 			// En cas d'erreur, on tente une autre implémentation
 			catch (Throwable e) {
-				System.out.println(String.format("Impossible d'utiliser la source de données %s : %s (%s)",
+				System.out.println(String.format("[DataSource] Unable to use %s : %s (%s)",
 						impl.getClass().getSimpleName(),
 						e.getMessage(), e.getClass().getSimpleName()));
 				continue;

@@ -8,10 +8,10 @@ public class Statement {
 
 	/**
 	 * @param humidity En pourcentage d'humidité.
-	 * @param tempOut  Le température extérieure.
 	 * @param tempIn   La température intérieure.
+	 * @param tempOut  Le température extérieure.
 	 */
-	public Statement(double humidity, double tempOut, double tempIn) {
+	public Statement(double humidity, double tempIn, double tempOut) {
 		this.humidity = humidity;
 		this.tempOut = tempOut;
 		this.tempIn = tempIn;

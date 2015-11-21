@@ -21,7 +21,7 @@ public class ModelizedDataSource extends RandomDataSource {
 	private double variationFroidMax = 0.9d;
 	
 	// Cible pour modifier la temperature extérieure
-	private double cibleTempExt;
+	private double cibleTout;
 	
 	@Override
 	public void init() throws Throwable {
@@ -37,7 +37,7 @@ public class ModelizedDataSource extends RandomDataSource {
 		H = Math.random() * 100.0d;
 		
 		// Dès le début on fait grimper la température d'un degrés
-		cibleTempExt = Tout + 1;
+		cibleTout = Tout + 1;
 		
 	}
 	
@@ -65,18 +65,18 @@ public class ModelizedDataSource extends RandomDataSource {
 			Tin -= variationFroid;
 			
 			// On fait varier la température extérieure
-			if (Math.abs(cibleTempExt - Tout) > 0.01) {
-				Tout -= (Tout-cibleTempExt)/20d;
+			if (Math.abs(cibleTout - Tout) > 0.01) {
+				Tout -= (Tout-cibleTout)/20d;
 			}
 			else {
 				// On génére une nouvelle température à atteindre
-				cibleTempExt += Math.random() * 2 - 1;
-				if (cibleTempExt > 27) cibleTempExt -= 3;
-				if (cibleTempExt < 6) cibleTempExt += 3;
+				cibleTout += Math.random() * 2 - 1;
+				if (cibleTout > 27) cibleTout -= 3;
+				if (cibleTout < 6) cibleTout += 3;
 			}
 			
 			// On notifie les listeners qu'une nouvelle données est disponible
-			notifyListeners(new Statement(H, Tout, Tin));
+			notifyListeners(new Statement(H, Tin, Tout));
 			sleep();
 		}
 	}
