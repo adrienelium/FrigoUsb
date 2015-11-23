@@ -18,13 +18,16 @@ import fr.exia.pmf.vue.WindowsV2;
 
 public class Main {
 
-	public static void main(String[] ag) {
-		
+	public static void main(String[] args) {
+
 		// Logs
-		boolean PRODUCTION = true;
+		boolean DEBUG = args.length > 0 && "debug".equals(args[0]);
 		
 		// On obtient une implémentation de la liaison données
-		IDataConnection datalink = getDataLinkImplementation();
+		IDataConnection datalink = DEBUG ? new ModelizedDataSource() : getDataLinkImplementation();
+		
+		// On affiche l'implémentation retenue
+		System.out.println("[DataSource] Data source: " + datalink.getClass().getSimpleName());
 
 		// On fabrique une logique de régulation
 		IRegulator regulator = new RegulationSimple();
@@ -47,7 +50,7 @@ public class Main {
 				WindowsV2 vue = new WindowsV2();
 				
 				// En production on lève une alerte si on est sur des fausses données, et on l'indique dans le titre de la fenêtre
-				if (PRODUCTION && !(datalink instanceof ArduinoDataSource)) {
+				if (!DEBUG && !(datalink instanceof ArduinoDataSource)) {
 					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison avec l'Arduino."
 							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
 					vue.setTitle(vue.getTitle() + " (Simulation)");
@@ -73,9 +76,6 @@ public class Main {
 			System.err.println("No valid data source implementation to run");
 			System.exit(-1);
 		}
-		
-		// On affiche l'implémentation retenue
-		System.out.println("[DataSource] Data source: " + obj.getClass().getSimpleName());
 		
 		// Et one renvoie l'implémentation
 		return obj;

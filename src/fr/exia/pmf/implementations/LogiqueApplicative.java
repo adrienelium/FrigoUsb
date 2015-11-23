@@ -3,7 +3,6 @@ package fr.exia.pmf.implementations;
 import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Date;
 
 import fr.exia.pmf.abstractions.IDataConnection;
 import fr.exia.pmf.abstractions.IDataConnectionListener;
@@ -37,7 +36,7 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 		this.regulator = regulator;
 		
 		// Valeur initiales de l'IHM
-		this.view.labelConsigneTemp.setText(String.format("%.2f °C", regulator.getConsigneTemperature()));
+		this.view.labelConsigneTemp.setText(String.format("%.1f °C", regulator.getConsigneTemperature()));
 		this.view.alertCondensation.setVisible(false);
 		this.view.alertTempGap.setVisible(false);
 		this.view.chart.mark.setValue(regulator.getConsigneTemperature());

@@ -28,7 +28,7 @@ public class ModelizedDataSource extends RandomDataSource {
 		
 		// Génération d'une température extérieure.
 		// 22°C +/- 4°C
-		Tout = 22.0d + (Math.random() * 8.0d) - 4.0d;
+		Tout = 20.0d + (Math.random() * 8.0d) - 4.0d;
 		
 		// Initialement la T° intérieure est la même qu'à l'extérieur.
 		Tin = Tout;
