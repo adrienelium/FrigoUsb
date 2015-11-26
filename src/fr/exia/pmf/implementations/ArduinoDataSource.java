@@ -122,7 +122,9 @@ public class ArduinoDataSource extends AbstractDataConnection implements SerialP
 				float[] values = parseFloatArray(tokens);
 				// Vérification CRC
 				if (!tokens[3].equals("nan") && values[0] + values[1] + values[2] != values[3]) {
+//					System.err.println("Read " + inputLine);
 					System.err.println("[Arduino] Invalid data message (crc)");
+//					System.err.println(String.format("%s + %s + %s != %s", values[0],values[1],values[2],values[3]));
 				}
 				// On prévient les listeners
 				notifyListeners(new Statement(values[0], values[1], values[2]));

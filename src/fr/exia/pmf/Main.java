@@ -9,11 +9,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import fr.exia.pmf.abstractions.IDataConnection;
 import fr.exia.pmf.abstractions.IRegulator;
-import fr.exia.pmf.implementations.RandomDataSource;
-import fr.exia.pmf.implementations.ModelizedDataSource;
-import fr.exia.pmf.implementations.LogiqueApplicative;
-import fr.exia.pmf.implementations.RegulationSimple;
 import fr.exia.pmf.implementations.ArduinoDataSource;
+import fr.exia.pmf.implementations.LisseurTempExterne;
+import fr.exia.pmf.implementations.LogiqueApplicative;
+import fr.exia.pmf.implementations.ModelizedDataSource;
+import fr.exia.pmf.implementations.RandomDataSource;
+import fr.exia.pmf.implementations.RegulationSimple;
 import fr.exia.pmf.vue.WindowsV2;
 
 public class Main {
@@ -21,10 +22,10 @@ public class Main {
 	public static void main(String[] args) {
 
 		// Logs
-		boolean DEBUG = args.length > 0 && "debug".equals(args[0]);
+		boolean SIMULATION = args.length > 0 && "simulation".equals(args[0]);
 		
 		// On obtient une implémentation de la liaison données
-		IDataConnection datalink = DEBUG ? new ModelizedDataSource() : getDataLinkImplementation();
+		IDataConnection datalink = SIMULATION ? new ModelizedDataSource() : getDataLinkImplementation();
 		
 		// On affiche l'implémentation retenue
 		System.out.println("[DataSource] Data source: " + datalink.getClass().getSimpleName());
@@ -50,7 +51,7 @@ public class Main {
 				WindowsV2 vue = new WindowsV2();
 				
 				// En production on lève une alerte si on est sur des fausses données, et on l'indique dans le titre de la fenêtre
-				if (!DEBUG && !(datalink instanceof ArduinoDataSource)) {
+				if (!SIMULATION && datalink instanceof RandomDataSource) {
 					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison avec l'Arduino."
 							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
 					vue.setTitle(vue.getTitle() + " (Simulation)");
@@ -65,9 +66,10 @@ public class Main {
 	}
 
 	private static IDataConnection getDataLinkImplementation() {
+		
 		// On choisit une implémentation valide de la source de donnée
 		IDataConnection obj = chooseImplementation(
-				new ArduinoDataSource(),
+				new LisseurTempExterne(new ArduinoDataSource(), 15), // On corrige avec un lissage moyen sur 15 valeurs
 				new ModelizedDataSource(),
 				new RandomDataSource());
 		

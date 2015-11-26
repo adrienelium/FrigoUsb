@@ -74,7 +74,7 @@ public class LineChart extends ApplicationFrame{
 		  renderer.setSeriesPaint(1, new Color(0, 174, 189));
 		  renderer.setSeriesStroke(1,  new BasicStroke(2));
 		  
-		  plot.getRangeAxis().setRange(new Range(5, 28));
+		  plot.getRangeAxis().setRange(new Range(10, 35)); // En T°C
 		  plot.getRangeAxis().setTickLabelPaint(new Color(200,200,200));
 		  
 //		  plot.setBackgroundPaint(new Color(77,77,77));
