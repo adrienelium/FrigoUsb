@@ -58,8 +58,14 @@ public class Main {
 				}
 				
 				// Et enfin on démarre la logique applicative
-				app.start(vue, datalink, regulator);
-								
+				try {
+					app.start(vue, datalink, regulator);
+				} catch (Throwable ex) {
+					JOptionPane.showMessageDialog(null, "Erreur au lancement de l'application."
+							+ "\n" + ex.getClass().getSimpleName() + " : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+					ex.printStackTrace();
+				}
+
 			}
 		});
 

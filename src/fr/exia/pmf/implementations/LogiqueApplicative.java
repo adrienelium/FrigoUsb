@@ -15,7 +15,7 @@ import fr.exia.pmf.vue.WindowsV2;
 public class LogiqueApplicative implements IDataConnectionListener, IRegulatorListener {
 	
 	// Puissance du réfrigérateur en Watt
-	public static long PUISSANCE_FRIGO = 300;
+	public static long PUISSANCE_FRIGO = 60;
 	
 	// Prix EDF en € au kWh au 21/11/15
 	private static final double TARIF_KWH = 0.14040d;
@@ -27,8 +27,9 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 
 	/**
 	 * Démarrer toute la logique applicative.
+	 * @throws Throwable 
 	 */
-	public void start(WindowsV2 view, IDataConnection datalink, IRegulator regulator) {
+	public void start(WindowsV2 view, IDataConnection datalink, IRegulator regulator) throws Throwable {
 		
 		// On conserve les références
 		this.view = view;
@@ -71,6 +72,7 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 		this.view.setVisible(true);
 		
 		// Et enfin on lance la source de données !
+		//this.datalink.init(); // Déjà fait
 		this.datalink.start();
 		
 	}
