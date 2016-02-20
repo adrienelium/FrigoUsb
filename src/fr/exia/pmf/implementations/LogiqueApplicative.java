@@ -1,6 +1,8 @@
 package fr.exia.pmf.implementations;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -29,7 +31,7 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	 * Démarrer toute la logique applicative.
 	 * @throws Throwable 
 	 */
-	public void start(WindowsV2 view, IDataConnection datalink, IRegulator regulator) throws Throwable {
+	public void start(WindowsV2 view, final IDataConnection datalink, final IRegulator regulator) throws Throwable {
 		
 		// On conserve les références
 		this.view = view;
@@ -43,11 +45,15 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 		this.view.chart.mark.setValue(regulator.getConsigneTemperature());
 
 		// On bind les comportements des boutons de régulation
-		view.btnConsignePlus.addActionListener((actionEvent) -> {
-			this.regulator.setTempConsigne(regulator.getConsigneTemperature() + 0.5f);
+		view.btnConsignePlus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				LogiqueApplicative.this.regulator.setTempConsigne(regulator.getConsigneTemperature() + 0.5f);
+			}
 		});
-		view.btnConsigneMoins.addActionListener((actionListener) -> {
-			this.regulator.setTempConsigne(regulator.getConsigneTemperature() - 0.5f);
+		view.btnConsigneMoins.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionListener) {
+				LogiqueApplicative.this.regulator.setTempConsigne(regulator.getConsigneTemperature() - 0.5f);
+			}
 		});
 		
 		// On ajoute le comportement de fullscreen
@@ -81,26 +87,28 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	 * On met à jour l'IHM quand de nouvelles données arrivent.
 	 */
 	@Override
-	public void onNewStatementRead(Statement data) {
-		EventQueue.invokeLater(() -> {
-			// Update des labels
-			view.labelTempExt.setText(String.format("%.1f °C", data.getExteriorTemperature()));
-			view.labelTempInt.setText(String.format("%.1f °C", data.getInteriorTemperature()));
-			view.labelHumitidy.setText(String.format("%.1f", data.getHumidityRate()) + "%");
-			// On ajoute la donnée au chart
-			view.chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());
-			// On ajoute de la conso quand le frigo est allumé
-			double Wh = datalink.getPowerUptime() / 3600d * PUISSANCE_FRIGO;
-			double kWh = Wh / 1000d;
-			double prix = kWh * TARIF_KWH;
-			String conso;
-			if (Wh > 1000) {
-				conso = String.format("Consommation : %.2f kWh (%.4f \u20AC)", kWh, prix);
+	public void onNewStatementRead(final Statement data) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				// Update des labels
+				view.labelTempExt.setText(String.format("%.1f °C", data.getExteriorTemperature()));
+				view.labelTempInt.setText(String.format("%.1f °C", data.getInteriorTemperature()));
+				view.labelHumitidy.setText(String.format("%.1f", data.getHumidityRate()) + "%");
+				// On ajoute la donnée au chart
+				view.chart.addData((float)data.getInteriorTemperature(), (float)data.getExteriorTemperature());
+				// On ajoute de la conso quand le frigo est allumé
+				double Wh = datalink.getPowerUptime() / 3600d * PUISSANCE_FRIGO;
+				double kWh = Wh / 1000d;
+				double prix = kWh * TARIF_KWH;
+				String conso;
+				if (Wh > 1000) {
+					conso = String.format("Consommation : %.2f kWh (%.4f \u20AC)", kWh, prix);
+				}
+				else {
+					conso = String.format("Consommation : %.0f Wh (%.4f \u20AC)", Wh, prix);
+				}
+				view.labelConsoWatt.setText(conso);
 			}
-			else {
-				conso = String.format("Consommation : %.0f Wh (%.4f \u20AC)", Wh, prix);
-			}
-			view.labelConsoWatt.setText(conso);
 		});
 	}
 	
@@ -108,10 +116,12 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	 * On met à jour l'IHM quand la consigne de température change.
 	 */
 	@Override
-	public void onConsigneTemperatureChanged(double temp) {
-		EventQueue.invokeLater(() -> {
-			view.labelConsigneTemp.setText(String.format("%.1f °C", temp));
-			this.view.chart.mark.setValue(temp);
+	public void onConsigneTemperatureChanged(final double temp) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				view.labelConsigneTemp.setText(String.format("%.1f °C", temp));
+				LogiqueApplicative.this.view.chart.mark.setValue(temp);
+			}
 		});
 	}
 	
@@ -128,9 +138,11 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	 * On met à jour l'IHM quand l'alerte de condensation change d'état.
 	 */
 	@Override
-	public void onAlertCondensationChanged(boolean state) {
-		EventQueue.invokeLater(() -> {
-			view.alertCondensation.setVisible(state);
+	public void onAlertCondensationChanged(final boolean state) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				view.alertCondensation.setVisible(state);
+			}
 		});
 	}
 
@@ -138,9 +150,11 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	 * On met à jour l'IHM quand l'alerte d'écart de température change d'état.
 	 */
 	@Override
-	public void onAlertTemperatureGapChanged(boolean state) {
-		EventQueue.invokeLater(() -> {
-			view.alertTempGap.setVisible(state);
+	public void onAlertTemperatureGapChanged(final boolean state) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				view.alertTempGap.setVisible(state);
+			}
 		});
 	}
 
@@ -148,11 +162,13 @@ public class LogiqueApplicative implements IDataConnectionListener, IRegulatorLi
 	 * On met à jour l'IHM quand l'état d'allumage du frigo est confirmé par la source.
 	 */
 	@Override
-	public void onPowerStatusChanged(boolean powerOn) {
-		EventQueue.invokeLater(() -> {
-			// On met à jour la vue
-			view.labelConsignePower.setText(String.format("Allumage %s", powerOn ? "ON " : "OFF"));
-			view.labelConsignePower.setIcon(powerOn ? WindowsV2.ICON_YES : WindowsV2.ICON_NO);
+	public void onPowerStatusChanged(final boolean powerOn) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				// On met à jour la vue
+				view.labelConsignePower.setText(String.format("Allumage %s", powerOn ? "ON " : "OFF"));
+				view.labelConsignePower.setIcon(powerOn ? WindowsV2.ICON_YES : WindowsV2.ICON_NO);
+			}
 		});
 	}
 

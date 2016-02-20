@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -48,10 +48,10 @@ public class ArduinoDataSource extends AbstractDataConnection implements SerialP
 	@Override
 	public void init() throws Throwable {
 		
-		List<CommPortIdentifier> availablePorts = new ArrayList<>();
+		final List<CommPortIdentifier> availablePorts = new ArrayList<>();
 		Enumeration<?> portEnum = CommPortIdentifier.getPortIdentifiers();
 		
-		Placeholder<CommPortIdentifier> selectedPort = new Placeholder<>();
+		final Placeholder<CommPortIdentifier> selectedPort = new Placeholder<>();
 
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
@@ -62,18 +62,24 @@ public class ArduinoDataSource extends AbstractDataConnection implements SerialP
 		}
 		
 		if (availablePorts.size() > 0) {
-			StringBuilder ports = new StringBuilder();
-			availablePorts.forEach((port) -> {
-				ports.append(" " + port.getName());
+			final StringBuilder ports = new StringBuilder();
+			availablePorts.forEach(new Consumer<CommPortIdentifier>() {
+				public void accept(CommPortIdentifier port) {
+					ports.append(" " + port.getName());
+				}
 			});
-			SwingUtilities.invokeAndWait(() -> {
-				String selected = JOptionPane.showInputDialog("Indiquer le port série à utiliser.\nEntrez une des valeurs suivantes : "
-						+ ports + "\nCliquer sur annuler pour activer la simulation.");
-				availablePorts.forEach((port) -> {
-					if (selected.toLowerCase().equals(port.getName().toLowerCase())) {
-						selectedPort.set(port);
-					}
-				});
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					final String selected = JOptionPane.showInputDialog("Indiquer le port série à utiliser.\nEntrez une des valeurs suivantes : "
+							+ ports + "\nCliquer sur annuler pour activer la simulation.");
+					availablePorts.forEach(new Consumer<CommPortIdentifier>() {
+						public void accept(CommPortIdentifier port) {
+							if (selected.toLowerCase().equals(port.getName().toLowerCase())) {
+								selectedPort.set(port);
+							}
+						}
+					});
+				}
 			});
 		}
 		

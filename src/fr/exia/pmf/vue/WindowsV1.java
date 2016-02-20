@@ -294,7 +294,11 @@ public class WindowsV1 implements ActionListener, IDataConnectionListener, IRegu
 
 	@Override
 	public void onConsigneTemperatureChanged(double temp) {
-		EventQueue.invokeLater(() -> consigneLabel.setText(regul.getConsigneTemperature() + "°C"));
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				consigneLabel.setText(regul.getConsigneTemperature() + "°C");
+			}
+		});
 	}
 
 	@Override

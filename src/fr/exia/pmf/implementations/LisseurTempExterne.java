@@ -2,6 +2,7 @@ package fr.exia.pmf.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import fr.exia.pmf.abstractions.IDataConnection;
 import fr.exia.pmf.abstractions.IDataConnectionListener;
@@ -60,7 +61,11 @@ public class LisseurTempExterne implements IDataConnection, IDataConnectionListe
 				//add_debug(data.getExteriorTemperature())
 				add(data.getExteriorTemperature())
 		);
-		listeners.forEach(observer -> observer.onNewStatementRead(newData));
+		listeners.forEach(new Consumer<IDataConnectionListener>() {
+			public void accept(IDataConnectionListener observer) {
+				observer.onNewStatementRead(newData);
+			}
+		});
 	}
 
 	@Override
@@ -95,8 +100,12 @@ public class LisseurTempExterne implements IDataConnection, IDataConnectionListe
 	}
 
 	@Override
-	public void notifyListeners(boolean powerOn) {
-		listeners.forEach(observer -> observer.onPowerStatusChanged(powerOn));
+	public void notifyListeners(final boolean powerOn) {
+		listeners.forEach(new Consumer<IDataConnectionListener>() {
+			public void accept(IDataConnectionListener observer) {
+				observer.onPowerStatusChanged(powerOn);
+			}
+		});
 	}
 
 	@Override

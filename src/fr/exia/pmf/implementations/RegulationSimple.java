@@ -3,6 +3,7 @@ package fr.exia.pmf.implementations;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 import fr.exia.pmf.abstractions.IRegulator;
 import fr.exia.pmf.abstractions.IRegulatorListener;
@@ -122,27 +123,44 @@ public class RegulationSimple implements IRegulator {
 	}
 
 	@Override
-	public void notifyConsigneTemperatureChanged(double tempConsigne) {
+	public void notifyConsigneTemperatureChanged(final double tempConsigne) {
 		System.out.println("[Regulation] Consigne de température : " + tempConsigne);
-		this.listeners.forEach(obs -> obs.onConsigneTemperatureChanged(tempConsigne));
+		this.listeners.forEach(new Consumer<IRegulatorListener>() {
+			public void accept(IRegulatorListener obs) {
+				obs.onConsigneTemperatureChanged(tempConsigne);
+			}
+		});
 	}
 
 	@Override
-	public void notifyConsigneAllumageChanged(boolean powerState) {
+	public void notifyConsigneAllumageChanged(final boolean powerState) {
 		System.out.println("[Regulation] Consigne d'allumage : " + powerState);
-		this.listeners.forEach(obs -> obs.onConsigneAllumageChanged(powerState));
+		this.listeners.forEach(new Consumer<IRegulatorListener>() {
+			public void accept(IRegulatorListener obs) {
+				obs.onConsigneAllumageChanged(powerState);
+			}
+		});
 	}
 
 	@Override
-	public void notifyAlertCondensation(boolean state) {
+	public void notifyAlertCondensation(final boolean state) {
 		System.out.println("[Regulation] Alerte de condensation : " + state);
-		this.listeners.forEach(obs -> obs.onAlertCondensationChanged(state));
+		this.listeners.forEach(new Consumer<IRegulatorListener>() {
+			public void accept(IRegulatorListener obs) {
+				obs.onAlertCondensationChanged(state);
+			}
+		});
 	}
 
 	@Override
-	public void notifyAlertTemperatureGap(boolean state) {
+	public void notifyAlertTemperatureGap(final boolean state) {
 		System.out.println("[Regulation] Alerte d'écart de température : " + state);
-		this.listeners.forEach(obs -> obs.onAlertTemperatureGapChanged(state));
+		this.listeners.forEach(new Consumer<IRegulatorListener>() {
+			@Override
+			public void accept(IRegulatorListener obs) {
+				obs.onAlertTemperatureGapChanged(state);
+			}
+		});
 	}
 
 	@Override

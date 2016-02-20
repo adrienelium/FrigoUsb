@@ -22,19 +22,19 @@ public class Main {
 	public static void main(String[] args) {
 
 		// Logs
-		boolean SIMULATION = args.length > 0 && "simulation".equals(args[0]);
+		final boolean SIMULATION = args.length > 0 && "simulation".equals(args[0]);
 		
 		// On obtient une implémentation de la liaison données
-		IDataConnection datalink = SIMULATION ? new ModelizedDataSource() : getDataLinkImplementation();
+		final IDataConnection datalink = SIMULATION ? new ModelizedDataSource() : getDataLinkImplementation();
 		
 		// On affiche l'implémentation retenue
 		System.out.println("[DataSource] Data source: " + datalink.getClass().getSimpleName());
 
 		// On fabrique une logique de régulation
-		IRegulator regulator = new RegulationSimple();
+		final IRegulator regulator = new RegulationSimple();
 		
 		// On fabrique une logique applicative
-		LogiqueApplicative app = new LogiqueApplicative();
+		final LogiqueApplicative app = new LogiqueApplicative();
 		
 		// Je passe dans le thread de l'IHM
 		EventQueue.invokeLater(new Runnable() {
