@@ -1,0 +1,1 @@
+Pour lancer l'application, double-cliquer sur Frigo-PMF.jar
