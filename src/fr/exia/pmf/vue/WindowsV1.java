@@ -23,7 +23,7 @@ import org.jfree.chart.ChartPanel;
 
 import fr.exia.pmf.abstractions.IDataConnectionListener;
 import fr.exia.pmf.abstractions.IRegulatorListener;
-import fr.exia.pmf.implementations.RegulationSimple;
+import fr.exia.pmf.implementations.RegulationTOR;
 import fr.exia.pmf.model.Statement;
 
 public class WindowsV1 implements ActionListener, IDataConnectionListener, IRegulatorListener {
@@ -31,7 +31,7 @@ public class WindowsV1 implements ActionListener, IDataConnectionListener, IRegu
 	private JFrame frame;
 	
 	private LineChart chart;
-	private RegulationSimple regul;
+	private RegulationTOR regul;
 	
 	private JLabel tempIntLabel;
 	private JLabel consigneLabel;
@@ -41,7 +41,7 @@ public class WindowsV1 implements ActionListener, IDataConnectionListener, IRegu
 	/**
 	 * Create the application.
 	 */
-	public WindowsV1(RegulationSimple regul) {
+	public WindowsV1(RegulationTOR regul) {
 		initialize();
 		this.regul = regul;
 		frame.setVisible(true);

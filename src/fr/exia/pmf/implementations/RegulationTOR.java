@@ -9,24 +9,24 @@ import fr.exia.pmf.abstractions.IRegulator;
 import fr.exia.pmf.abstractions.IRegulatorListener;
 import fr.exia.pmf.model.Statement;
 
-public class RegulationSimple implements IRegulator {
+public class RegulationTOR implements IRegulator {
 	
-	private float consigneTemperature = 16.0f;
-	private boolean consigneAllumage = false;
+	protected float consigneTemperature = 16.0f;
+	protected boolean consigneAllumage = false;
 	
-	private double histoIn;
-	private Date histoDate;
+	protected double histoIn;
+	protected Date histoDate;
 	
-	private boolean alertLiquefaction = false;
-	private boolean alertTempGap = false;
+	protected boolean alertLiquefaction = false;
+	protected boolean alertTempGap = false;
 
-	private List<IRegulatorListener> listeners;
-	private Date lastAllumageOn = null;
+	protected List<IRegulatorListener> listeners;
+	protected Date lastAllumageOn = null;
 	
 	/**
 	 * Constructeur
 	 */
-	public RegulationSimple() {
+	public RegulationTOR() {
 		this.listeners = new ArrayList<IRegulatorListener>();
 	}
 	
@@ -46,6 +46,7 @@ public class RegulationSimple implements IRegulator {
 
 	protected void applyConsigne(Statement data) {
 		// On compare à la consigne -5% pour laisser la température refroidir un peu plus
+		// Il s'agit de la valeur d'hystérésis
 		boolean consigneAllumage = data.getInteriorTemperature() > consigneTemperature * .95;
 		// On vérifie que la consigne a changée
 		if (this.consigneAllumage != consigneAllumage) {
