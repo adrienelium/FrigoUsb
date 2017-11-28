@@ -14,7 +14,7 @@ import fr.exia.pmf.implementations.LisseurTempExterne;
 import fr.exia.pmf.implementations.LogiqueApplicative;
 import fr.exia.pmf.implementations.ModelizedDataSource;
 import fr.exia.pmf.implementations.RandomDataSource;
-import fr.exia.pmf.implementations.RegulationPID;
+import fr.exia.pmf.implementations.RegulationTOR;
 import fr.exia.pmf.vue.WindowsV2;
 
 public class Main {
@@ -31,8 +31,8 @@ public class Main {
 		System.out.println("[DataSource] Data source: " + datalink.getClass().getSimpleName());
 
 		// On fabrique une logique de régulation
-		//final IRegulator regulator = new RegulationTOR();
-		final IRegulator regulator = new RegulationPID(1, 1, 1);
+		final IRegulator regulator = new RegulationTOR();
+		//final IRegulator regulator = new RegulationPID(1, 1, 1);
 		
 		// On fabrique une logique applicative
 		final LogiqueApplicative app = new LogiqueApplicative();
