@@ -4,7 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.function.Consumer;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import fr.exia.pmf.abstractions.AbstractDataConnection;
 import fr.exia.pmf.model.Statement;
@@ -42,26 +48,49 @@ public class ArduinoDataSource extends AbstractDataConnection implements SerialP
 	@Override
 	public void init() throws Throwable {
 		
-		CommPortIdentifier portId = null;
-		
+		final List<CommPortIdentifier> availablePorts = new ArrayList<>();
 		Enumeration<?> portEnum = CommPortIdentifier.getPortIdentifiers();
+		
+		final Placeholder<CommPortIdentifier> selectedPort = new Placeholder<>();
 
-		//First, Find an instance of serial port as set in PORT_NAMES.
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
 			if (currPortId.getPortType() == CommPortIdentifier.PORT_SERIAL)
 			{
-				portId = currPortId;
-				System.out.println("[DataSource] Arduino found on serial port: " + portId.getName());
+				availablePorts.add(currPortId);
 			}
 		}
 		
-		if (portId == null) {
+		if (availablePorts.size() > 0) {
+			final StringBuilder ports = new StringBuilder();
+			availablePorts.forEach(new Consumer<CommPortIdentifier>() {
+				public void accept(CommPortIdentifier port) {
+					ports.append(" " + port.getName());
+				}
+			});
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					final String selected = JOptionPane.showInputDialog("Indiquer le port série à utiliser.\nEntrez une des valeurs suivantes : "
+							+ ports + "\nCliquer sur annuler pour activer la simulation.");
+					availablePorts.forEach(new Consumer<CommPortIdentifier>() {
+						public void accept(CommPortIdentifier port) {
+							if (selected.toLowerCase().equals(port.getName().toLowerCase())) {
+								selectedPort.set(port);
+							}
+						}
+					});
+				}
+			});
+		}
+		
+		if (selectedPort.isNull()) {
 			throw new IOException("Could not find COM port.");
 		}
+		
+		System.out.println("[DataSource] Arduino found on serial port: " + selectedPort.get().getName());
 
 		// open serial port, and use class name for the appName.
-		serialPort = (SerialPort) portId.open(this.getClass().getName(), TIME_OUT);
+		serialPort = (SerialPort) selectedPort.get().open(this.getClass().getName(), TIME_OUT);
 
 		// set port parameters
 		serialPort.setSerialPortParams(DATA_RATE,
@@ -122,7 +151,9 @@ public class ArduinoDataSource extends AbstractDataConnection implements SerialP
 				float[] values = parseFloatArray(tokens);
 				// Vérification CRC
 				if (!tokens[3].equals("nan") && values[0] + values[1] + values[2] != values[3]) {
+//					System.err.println("Read " + inputLine);
 					System.err.println("[Arduino] Invalid data message (crc)");
+//					System.err.println(String.format("%s + %s + %s != %s", values[0],values[1],values[2],values[3]));
 				}
 				// On prévient les listeners
 				notifyListeners(new Statement(values[0], values[1], values[2]));
@@ -192,5 +223,6 @@ public class ArduinoDataSource extends AbstractDataConnection implements SerialP
 			writeData(this.powerEnabled ? "1" : "2");
 		}
 	}
+	
 
 }

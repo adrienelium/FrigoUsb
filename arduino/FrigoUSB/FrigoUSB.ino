@@ -49,6 +49,26 @@ void setup() {
 }
 
 /**
+ * Contrôle de cohérence.
+ * Basé sur l'algo CRC8 de Dallas et Maxim
+ */
+byte CRC8(const byte *data, int len) {
+  byte crc = 0x00;
+  while (len--) {
+    byte extract = *data++;
+    for (byte tempI = 8; tempI; tempI--) {
+      byte sum = (crc ^ extract) & 0x01;
+      crc >>= 1;
+      if (sum) {
+        crc ^= 0x8C;
+      }
+      extract >>= 1;
+    }
+  }
+  return crc;
+}
+
+/**
  * Boucle de travail.
  */
 void loop() {
@@ -90,6 +110,24 @@ void loop() {
   Serial.print(Tout);
   Serial.print(';');
   Serial.println(Hin + Tin + Tout); // CRC
+
+
+  //int H1 = (int)(Hin * 100);
+  //int T1 = (int)(Hin * 100);
+  //int T2 = (int)(Hin * 100);
+  
+
+  //String var = String(Hin) + ';' + String(Tin) + ';' + String(Tout);
+  //unsigned char test[sizeof(var)];
+  //var.getBytes(test, sizeof(var));
+  
+  //char* val = {};
+  //String.getBytes(var, val, sizeof(var));
+  
+  //Serial.print(var);
+  //Serial.println('=');
+  //Serial.println(CRC8(test, sizeof(var)));
+  
   writting = false;
 }
 

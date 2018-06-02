@@ -2,6 +2,7 @@ package fr.exia.pmf.abstractions;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.function.Consumer;
 
 import fr.exia.pmf.model.Statement;
 
@@ -32,12 +33,16 @@ public abstract class AbstractDataConnection implements IDataConnection {
 	}
 
 	@Override
-	public void notifyListeners(Statement data) {
-		listeners.forEach(observer -> observer.onNewStatementRead(data));
+	public void notifyListeners(final Statement data) {
+		listeners.forEach(new Consumer<IDataConnectionListener>() {
+			public void accept(IDataConnectionListener observer) {
+				observer.onNewStatementRead(data);
+			}
+		});
 	}
 	
 	@Override
-	public void notifyListeners(boolean powerOn) {
+	public void notifyListeners(final boolean powerOn) {
 		// On incrémente le temps d'allumage du frigo
 		if (powerOn) {
 			this.powerOnTime = new Date();
@@ -46,7 +51,11 @@ public abstract class AbstractDataConnection implements IDataConnection {
 			this.tempsAllumage = getPowerUptime();
 			this.powerOnTime = null;
 		}
-		listeners.forEach(observer -> observer.onPowerStatusChanged(powerOn));
+		listeners.forEach(new Consumer<IDataConnectionListener>() {
+			public void accept(IDataConnectionListener observer) {
+				observer.onPowerStatusChanged(powerOn);
+			}
+		});
 	}
 
 	protected void sleep(long duration) {

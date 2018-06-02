@@ -9,28 +9,33 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import fr.exia.pmf.abstractions.IDataConnection;
 import fr.exia.pmf.abstractions.IRegulator;
-import fr.exia.pmf.implementations.RandomDataSource;
-import fr.exia.pmf.implementations.ModelizedDataSource;
-import fr.exia.pmf.implementations.LogiqueApplicative;
-import fr.exia.pmf.implementations.RegulationSimple;
 import fr.exia.pmf.implementations.ArduinoDataSource;
+import fr.exia.pmf.implementations.LisseurTempExterne;
+import fr.exia.pmf.implementations.LogiqueApplicative;
+import fr.exia.pmf.implementations.ModelizedDataSource;
+import fr.exia.pmf.implementations.RandomDataSource;
+import fr.exia.pmf.implementations.RegulationTOR;
 import fr.exia.pmf.vue.WindowsV2;
 
 public class Main {
 
-	public static void main(String[] ag) {
-		
+	public static void main(String[] args) {
+
 		// Logs
-		boolean PRODUCTION = true;
+		final boolean SIMULATION = args.length > 0 && "simulation".equals(args[0]);
 		
 		// On obtient une implémentation de la liaison données
-		IDataConnection datalink = getDataLinkImplementation();
+		final IDataConnection datalink = SIMULATION ? new ModelizedDataSource() : getDataLinkImplementation();
+		
+		// On affiche l'implémentation retenue
+		System.out.println("[DataSource] Data source: " + datalink.getClass().getSimpleName());
 
 		// On fabrique une logique de régulation
-		IRegulator regulator = new RegulationSimple();
+		final IRegulator regulator = new RegulationTOR();
+		//final IRegulator regulator = new RegulationPID(1, 1, 1);
 		
 		// On fabrique une logique applicative
-		LogiqueApplicative app = new LogiqueApplicative();
+		final LogiqueApplicative app = new LogiqueApplicative();
 		
 		// Je passe dans le thread de l'IHM
 		EventQueue.invokeLater(new Runnable() {
@@ -47,24 +52,31 @@ public class Main {
 				WindowsV2 vue = new WindowsV2();
 				
 				// En production on lève une alerte si on est sur des fausses données, et on l'indique dans le titre de la fenêtre
-				if (PRODUCTION && !(datalink instanceof ArduinoDataSource)) {
+				if (!SIMULATION && datalink instanceof RandomDataSource) {
 					JOptionPane.showMessageDialog(null, "Impossible d'établire la liaison avec l'Arduino."
 							+ "\nDe fausses données vont être utilisées.", "Information", JOptionPane.INFORMATION_MESSAGE);
 					vue.setTitle(vue.getTitle() + " (Simulation)");
 				}
 				
 				// Et enfin on démarre la logique applicative
-				app.start(vue, datalink, regulator);
-								
+				try {
+					app.start(vue, datalink, regulator);
+				} catch (Throwable ex) {
+					JOptionPane.showMessageDialog(null, "Erreur au lancement de l'application."
+							+ "\n" + ex.getClass().getSimpleName() + " : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+					ex.printStackTrace();
+				}
+
 			}
 		});
 
 	}
 
 	private static IDataConnection getDataLinkImplementation() {
+		
 		// On choisit une implémentation valide de la source de donnée
 		IDataConnection obj = chooseImplementation(
-				new ArduinoDataSource(),
+				new LisseurTempExterne(new ArduinoDataSource(), 15), // On corrige avec un lissage moyen sur 15 valeurs
 				new ModelizedDataSource(),
 				new RandomDataSource());
 		
@@ -73,9 +85,6 @@ public class Main {
 			System.err.println("No valid data source implementation to run");
 			System.exit(-1);
 		}
-		
-		// On affiche l'implémentation retenue
-		System.out.println("[DataSource] Data source: " + obj.getClass().getSimpleName());
 		
 		// Et one renvoie l'implémentation
 		return obj;
